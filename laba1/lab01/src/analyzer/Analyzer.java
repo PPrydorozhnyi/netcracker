@@ -95,6 +95,7 @@ public class Analyzer {
         }
 
         exel.autoSize();
+        exel.createCharts();
         exel.writeToFile();
 
         System.out.println("Completed");

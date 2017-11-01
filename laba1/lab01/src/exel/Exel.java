@@ -1,15 +1,18 @@
 package exel;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.charts.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.xssf.usermodel.charts.XSSFChartLegend;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -22,7 +25,7 @@ import java.util.Set;
 public class Exel {
 
     private String filename;
-    private Workbook wb;
+    private XSSFWorkbook wb;
     private int[] sizes;
     private int columns;
     private Row row;
@@ -41,9 +44,9 @@ public class Exel {
      * sizes of the arrays
      */
     public Exel(String name, Set<Method> pathParamMethods, int[] sizes) {
-        filename = name + ".xls";
+        filename = name + ".xlsx";
 
-        wb = new HSSFWorkbook();
+        wb = new XSSFWorkbook();
 
 
         for (Method method : pathParamMethods) {
@@ -96,7 +99,7 @@ public class Exel {
      */
     public boolean write(String sortName, String methodName, long time) {
 
-        Sheet sheet = wb.getSheet(methodName);
+        XSSFSheet sheet = wb.getSheet(methodName);
 
         if (sheet == null) {
             System.out.println("Can not write data to Exel file" +
@@ -125,7 +128,7 @@ public class Exel {
      * algorithm running time
      *
      */
-    private void writeData(Sheet sheet, String sortName, long time) {
+    private void writeData(XSSFSheet sheet, String sortName, long time) {
 
         int rowNum = sheet.getLastRowNum();
         int column = sheet.getRow(rowNum).getLastCellNum();
@@ -163,6 +166,13 @@ public class Exel {
 
     }
 
+    public void createCharts() {
+
+        for (Sheet sheet : wb)
+            createChart(sheet);
+
+    }
+
     /**
      *writes data to the Exel file
      *
@@ -179,40 +189,44 @@ public class Exel {
         }
     }
 
-//    private void createChart(Sheet sheet) {
-//
-///* At the end of this step, we have a worksheet with test data, that we want to write into a chart */
-//                        /* Create a drawing canvas on the worksheet */
-//        XSSFDrawing xlsx_drawing = my_worksheet.createDrawingPatriarch();
-//                        /* Define anchor points in the worksheet to position the chart */
-//        XSSFClientAnchor anchor = xlsx_drawing.createAnchor(0, 0, 0, 0, 0, 5, 10, 15);
-//                        /* Create the chart object based on the anchor point */
-//        XSSFChart my_line_chart = xlsx_drawing.createChart(anchor);
-//                        /* Define legends for the line chart and set the position of the legend */
-//        XSSFChartLegend legend = my_line_chart.getOrCreateLegend();
-//        legend.setPosition(LegendPosition.BOTTOM);
-//                        /* Create data for the chart */
-//        LineChartData data = my_line_chart.getChartDataFactory().createLineChartData();
-//                        /* Define chart AXIS */
-//        ChartAxis bottomAxis = my_line_chart.getChartAxisFactory().createCategoryAxis(AxisPosition.BOTTOM);
-//        ValueAxis leftAxis = my_line_chart.getChartAxisFactory().createValueAxis(AxisPosition.LEFT);
-//        leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-//                        /* Define Data sources for the chart */
-//                        /* Set the right cell range that contain values for the chart */
-//                        /* Pass the worksheet and cell range address as inputs */
-//                        /* Cell Range Address is defined as First row, last row, first column, last column */
-//        ChartDataSource<Number> xs = DataSources.fromNumericCellRange(sheet, new CellRangeAddress(0, 0, 0, 4));
-//        ChartDataSource<Number> ys1 = DataSources.fromNumericCellRange(sheet, new CellRangeAddress(1, 1, 0, 4));
-//        ChartDataSource<Number> ys2 = DataSources.fromNumericCellRange(sheet, new CellRangeAddress(2, 2, 0, 4));
-//        ChartDataSource<Number> ys3 = DataSources.fromNumericCellRange(sheet, new CellRangeAddress(3, 3, 0, 4));
-//                        /* Add chart data sources as data to the chart */
-//        data.addSerie(xs, ys1);
-//        data.addSerie(xs, ys2);
-//        data.addSerie(xs, ys3);
-//                        /* Plot the chart with the inputs from data and chart axis */
-//        my_line_chart.plot(data, new ChartAxis[] { bottomAxis, leftAxis });
-//
-//    }
+    private void createChart(Sheet sheet) {
+
+        ArrayList<ChartDataSource<Number>> ar = new ArrayList<>(7);
+
+
+/* At the end of this step, we have a worksheet with test data, that we want to write into a chart */
+                        /* Create a drawing canvas on the worksheet */
+        XSSFDrawing xlsx_drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
+                        /* Define anchor points in the worksheet to position the chart */
+        XSSFClientAnchor anchor = xlsx_drawing.createAnchor(0, 0, 0, 0, 0, 5, 10, 15);
+                        /* Create the chart object based on the anchor point */
+        XSSFChart my_line_chart = xlsx_drawing.createChart(anchor);
+        my_line_chart.setTitleText(sheet.getSheetName());
+                        /* Define legends for the line chart and set the position of the legend */
+        XSSFChartLegend legend = my_line_chart.getOrCreateLegend();
+        legend.setPosition(LegendPosition.BOTTOM);
+                        /* Create data for the chart */
+        LineChartData data = my_line_chart.getChartDataFactory().createLineChartData();
+                        /* Define chart AXIS */
+        ValueAxis bottomAxis = my_line_chart.getChartAxisFactory().createValueAxis(AxisPosition.BOTTOM);
+        ValueAxis leftAxis = my_line_chart.getChartAxisFactory().createValueAxis(AxisPosition.LEFT);
+        bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+        leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+        leftAxis.setLogBase(10);
+        //System.out.println(leftAxis.isSetLogBase());
+
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            ar.add(DataSources.fromNumericCellRange(sheet, new CellRangeAddress(i, i, 0, columns)));
+        }
+                        /* Add chart data sources as data to the chart */
+
+        for (int i = 1; i < ar.size(); i++)
+            data.addSeries(ar.get(0), ar.get(i));
+
+                        /* Plot the chart with the inputs from data and chart axis */
+        my_line_chart.plot(data, bottomAxis, leftAxis);
+
+    }
 
 
 }
