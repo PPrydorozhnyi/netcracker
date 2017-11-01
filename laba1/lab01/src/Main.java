@@ -1,7 +1,7 @@
 import analyzer.Analyzer;
 
 /**
- * Created by drake on 20/10/17.
+ * Main method
  */
 public class Main {
 

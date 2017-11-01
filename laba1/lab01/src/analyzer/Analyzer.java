@@ -2,15 +2,9 @@ package analyzer;
 
 import exel.Exel;
 import fillers.FillerAnnotation;
-import org.reflections.Reflections;
-import org.reflections.scanners.MethodAnnotationsScanner;
-import org.reflections.scanners.SubTypesScanner;
 import sorters.Sort;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -32,9 +26,8 @@ import java.util.Set;
 public class Analyzer {
 
     private static Analyzer analyzer;
+    private ReflectionsDecorator reflectionsDecorator;
 
-    private Reflections reflections;
-    private Set<Class<? extends Sort>> subTypes;
     private Set<Sort> sorters;
     private Set<Method> pathParamMethods;
     private int[] sizes = {10, 100, 1000, 10000};
@@ -44,13 +37,12 @@ public class Analyzer {
      * constructor of the analyzer class
      */
     private Analyzer() {
-        reflections = new Reflections("", new MethodAnnotationsScanner(), new SubTypesScanner());
 
-        subTypes = reflections.getSubTypesOf(Sort.class);
+        reflectionsDecorator = new ReflectionsDecorator(Sort.class);
 
-        sorters = new HashSet<>();
+        pathParamMethods = reflectionsDecorator.getMethodsAnnotatedWith(FillerAnnotation.class);
 
-        pathParamMethods = reflections.getMethodsAnnotatedWith(FillerAnnotation.class);
+        sorters = reflectionsDecorator.instantiate();
 
         exel = new Exel("Stats", pathParamMethods, sizes);
     }
@@ -70,50 +62,17 @@ public class Analyzer {
         return analyzer;
     }
 
-    /**
-     *
-     * instantiate sorts
-     * {@link #analyze()
-     *
-     * @param set
-     * set of sorts
-     */
-    private void instantiate(Set<Class<? extends Sort>> set) {
-
-        if (set.isEmpty()) {
-            System.out.println("Empty");
-            return;
-        }
-
-
-        for (Class<? extends Sort> cl : set) {
-
-            if (!Modifier.isAbstract(cl.getModifiers())) {
-                try {
-                    sorters.add(cl.newInstance());
-                } catch (InstantiationException | IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-        }
-
-
-    }
 
     /**
      * instantiate srt methods and measures algorithms running time
      *
      * {@link #algorithmTime(Sort algorithm, Method method, int size)
-     * {@link #instantiate(Set<Class<? extends Sort>>)}
+     *
      */
     public void analyze() {
 
         boolean correctWrite;
         long time;
-
-        instantiate(subTypes);
 
         for (Method method : pathParamMethods) {
             for (Sort sort : sorters) {
@@ -157,11 +116,7 @@ public class Analyzer {
     private long algorithmTime(Sort algorithm, Method method, int size) {
         long start = System.nanoTime();
 
-        try {
-            algorithm.sort((int[]) method.invoke(null, size));
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        reflectionsDecorator.invokeMethod(algorithm, method, size);
 
         long result = System.nanoTime();
 
