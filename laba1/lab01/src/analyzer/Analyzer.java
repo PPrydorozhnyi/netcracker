@@ -1,6 +1,6 @@
 package analyzer;
 
-import exel.Exel;
+import exel.Excel;
 import fillers.FillerAnnotation;
 import sorters.Sort;
 
@@ -31,7 +31,7 @@ public class Analyzer {
     private Set<Sort> sorters;
     private Set<Method> pathParamMethods;
     private int[] sizes = {10, 100, 1000, 10000};
-    private Exel exel;
+    private Excel excel;
 
     /**
      * constructor of the analyzer class
@@ -44,7 +44,7 @@ public class Analyzer {
 
         sorters = reflectionsDecorator.instantiate();
 
-        exel = new Exel("Stats", pathParamMethods, sizes);
+        excel = new Excel("Stats", pathParamMethods, sizes);
     }
 
     /**
@@ -81,7 +81,7 @@ public class Analyzer {
                     algorithmTime(sort, method, size);
                     time = algorithmTime(sort, method, size);
 
-                    correctWrite = exel.write(sort.getClass().getName(),
+                    correctWrite = excel.write(sort.getClass().getName(),
                             method.getName(), time);
 
                     if (!correctWrite) {
@@ -94,9 +94,9 @@ public class Analyzer {
             }
         }
 
-        exel.autoSize();
-        exel.createCharts();
-        exel.writeToFile();
+        excel.autoSize();
+        excel.createCharts();
+        excel.writeToFile();
 
         System.out.println("Completed");
 

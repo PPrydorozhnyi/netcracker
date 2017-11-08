@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import java.util.Set;
 
 /**
- * Exel util
+ * Excel util
  *
  * @see <a href="https://poi.apache.org/">Apache Poi</a>
  *
  * @author P.Pridorozhny
  */
-public class Exel {
+public class Excel {
 
     private String filename;
     private XSSFWorkbook wb;
@@ -37,13 +37,13 @@ public class Exel {
      * util constructor
      *
      * @param name
-     * name of the Exel file without file extension
+     * name of the Excel file without file extension
      * @param pathParamMethods
      * set of all filler methods
      * @param sizes
      * sizes of the arrays
      */
-    public Exel(String name, Set<Method> pathParamMethods, int[] sizes) {
+    public Excel(String name, Set<Method> pathParamMethods, int[] sizes) {
         filename = name + ".xlsx";
 
         wb = new XSSFWorkbook();
@@ -102,7 +102,7 @@ public class Exel {
         XSSFSheet sheet = wb.getSheet(methodName);
 
         if (sheet == null) {
-            System.out.println("Can not write data to Exel file" +
+            System.out.println("Can not write data to Excel file" +
                     "Check your input data");
             return false;
         }
@@ -174,7 +174,52 @@ public class Exel {
     }
 
     /**
-     *writes data to the Exel file
+     * create linear chart in exel
+     * @param sheet
+     * sheet to paste the chart
+     */
+    private void createChart(Sheet sheet) {
+
+        assert sheet != null : "null pointer exception";
+
+        ArrayList<ChartDataSource<Number>> ar = new ArrayList<>(7);
+
+        XSSFDrawing xlsx_drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
+
+        XSSFClientAnchor anchor = xlsx_drawing.createAnchor(0, 0, 0, 0, 0, 5, 10, 15);
+
+        XSSFChart my_line_chart = xlsx_drawing.createChart(anchor);
+        my_line_chart.setTitleText(sheet.getSheetName());
+
+        XSSFChartLegend legend = my_line_chart.getOrCreateLegend();
+        legend.setPosition(LegendPosition.BOTTOM);
+        //create data for the chart
+        LineChartData data = my_line_chart.getChartDataFactory().createLineChartData();
+        //Define chart AXIS
+        ChartAxis bottomAxis = my_line_chart.getChartAxisFactory().createCategoryAxis(AxisPosition.BOTTOM);
+        ValueAxis leftAxis = my_line_chart.getChartAxisFactory().createValueAxis(AxisPosition.LEFT);
+        //bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+        leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+        //leftAxis.setLogBase(10);
+        //System.out.println(leftAxis.isSetLogBase());
+
+        for (int i = 0; i <= sheet.getLastRowNum(); i++) {
+            ar.add(DataSources.fromNumericCellRange(sheet, new CellRangeAddress(i, i, 0, columns)));
+        }
+//        ar.add(DataSources.fromNumericCellRange(sheet, new CellRangeAddress(0, 0, 0, columns)));
+//        ar.add(DataSources.fromNumericCellRange(sheet, new CellRangeAddress(1, sheet.getLastRowNum(), 0, columns)));
+        //Add chart data sources as data to the chart
+
+        for (int i = 1; i < ar.size(); i++)
+            data.addSeries(ar.get(0), ar.get(i));
+
+        //Plot the chart with the inputs from data and chart axis
+        my_line_chart.plot(data, bottomAxis, leftAxis);
+
+    }
+
+    /**
+     *writes data to the Excel file
      *
      * {@link #write(String sortName, String methodName, long time)}
      */
@@ -189,44 +234,7 @@ public class Exel {
         }
     }
 
-    private void createChart(Sheet sheet) {
 
-        ArrayList<ChartDataSource<Number>> ar = new ArrayList<>(7);
-
-
-/* At the end of this step, we have a worksheet with test data, that we want to write into a chart */
-                        /* Create a drawing canvas on the worksheet */
-        XSSFDrawing xlsx_drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
-                        /* Define anchor points in the worksheet to position the chart */
-        XSSFClientAnchor anchor = xlsx_drawing.createAnchor(0, 0, 0, 0, 0, 5, 10, 15);
-                        /* Create the chart object based on the anchor point */
-        XSSFChart my_line_chart = xlsx_drawing.createChart(anchor);
-        my_line_chart.setTitleText(sheet.getSheetName());
-                        /* Define legends for the line chart and set the position of the legend */
-        XSSFChartLegend legend = my_line_chart.getOrCreateLegend();
-        legend.setPosition(LegendPosition.BOTTOM);
-                        /* Create data for the chart */
-        LineChartData data = my_line_chart.getChartDataFactory().createLineChartData();
-                        /* Define chart AXIS */
-        ValueAxis bottomAxis = my_line_chart.getChartAxisFactory().createValueAxis(AxisPosition.BOTTOM);
-        ValueAxis leftAxis = my_line_chart.getChartAxisFactory().createValueAxis(AxisPosition.LEFT);
-        bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-        leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-        leftAxis.setLogBase(10);
-        //System.out.println(leftAxis.isSetLogBase());
-
-        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-            ar.add(DataSources.fromNumericCellRange(sheet, new CellRangeAddress(i, i, 0, columns)));
-        }
-                        /* Add chart data sources as data to the chart */
-
-        for (int i = 1; i < ar.size(); i++)
-            data.addSeries(ar.get(0), ar.get(i));
-
-                        /* Plot the chart with the inputs from data and chart axis */
-        my_line_chart.plot(data, bottomAxis, leftAxis);
-
-    }
 
 
 }
