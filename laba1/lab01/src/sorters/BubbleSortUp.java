@@ -25,4 +25,9 @@ public class BubbleSortUp extends BubbleSort {
         }
 
     }
+
+//    @Override
+//    public void sort(int[] array) {
+//        super.sort(array, true);
+//    }
 }

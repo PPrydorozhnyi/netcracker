@@ -1,5 +1,6 @@
 package analyzer;
 
+import org.openjdk.jmh.annotations.Benchmark;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.SubTypesScanner;
@@ -92,6 +93,7 @@ class ReflectionsDecorator {
      * @param size
      * size of array to fill
      */
+    @Benchmark
     void invokeMethod(Sort algorithm, Method method, int size) {
         try {
             algorithm.sort((int[]) method.invoke(null, size));
