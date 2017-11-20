@@ -1,4 +1,5 @@
 import dao.EmployeeDAO;
+import objects.Employee;
 
 import java.sql.SQLException;
 
@@ -9,11 +10,14 @@ public class Main {
 
     public static void main(String[] args) {
         EmployeeDAO dao = new EmployeeDAO();
+        Employee emp = null;
         try {
-            dao.getByID(1511094532520L);
+            emp = dao.getByID(1511094532520L);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        System.out.println(emp);
     }
 
 }
