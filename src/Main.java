@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * Created by drake on 19/11/17.
+ * @author P.Pridorozhny
  */
 public class Main {
 
@@ -14,7 +14,7 @@ public class Main {
         Employee emp = null;
         ArrayList<Employee> employees = null;
         try {
-            emp = dao.getByID(1511094532520L);
+            emp = dao.getByID(1511211821899L);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -30,7 +30,8 @@ public class Main {
                 System.out.println(empl);
         }
 
-        dao.createEmployee(emp);
+        //dao.createEmployee(emp);
+        dao.updateEmployee(employees.get(0), emp);
 
         try {
             dao.close();

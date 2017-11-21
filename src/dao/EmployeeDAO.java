@@ -100,6 +100,7 @@ public class EmployeeDAO {
             employee.setCommission(rs.getInt("commm"));
             employee.setDeptNumber(rs.getLong("deptnoo"));
         }
+        employee.setId(id);
 
         return employee;
     }
@@ -265,6 +266,97 @@ public class EmployeeDAO {
                     "VALUES(?, 1511095096402, ?)");
             myStmt.setLong(1, id);
             myStmt.setLong(2, emp.getDeptNumber() );
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void updateEmployee(Employee empS, Employee empD) {
+
+        PreparedStatement myStmt = null;
+        long id = empD.getId();
+
+        try {
+            myStmt = myConn.prepareStatement("UPDATE objects " +
+                    "SET  NAME = ?" +
+                    " WHERE OBJECT_ID = ?");
+            myStmt.setString(1, empS.getLastName());
+            myStmt.setLong(2, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("UPDATE params/*(object_id, attr_id, text_value)\n*/" +
+                    " SET /*(?, 1511095081213, ?)*/ text_value = ?" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095081213");
+            myStmt.setString(1, empS.getFirstName());
+            myStmt.setLong(2, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("UPDATE params/*(object_id, attr_id, text_value)\n*/" +
+                    " SET /*(?, 1511095081213, ?)*/ text_value = ?" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095084373");
+            myStmt.setString(1, empS.getJob());
+            myStmt.setLong(2, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("UPDATE params/*(object_id, attr_id, text_value)\n*/" +
+                    " SET /*(?, 1511095081213, ?)*/ date_value = ?" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095087262");
+            myStmt.setDate(1, new java.sql.Date(empS.getHiredate().getTimeInMillis()) );
+            myStmt.setLong(2, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("UPDATE params/*(object_id, attr_id, text_value)\n*/" +
+                    " SET /*(?, 1511095081213, ?)*/ NUMBER_VALUE = ?" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095090681");
+            myStmt.setInt(1, empS.getSalary() );
+            myStmt.setLong(2, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("UPDATE params/*(object_id, attr_id, text_value)\n*/" +
+                    " SET /*(?, 1511095081213, ?)*/ NUMBER_VALUE = ?" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095093511");
+            myStmt.setInt(1, empS.getCommission() );
+            myStmt.setLong(2, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("UPDATE params/*(object_id, attr_id, text_value)\n*/" +
+                    " SET /*(?, 1511095081213, ?)*/ NUMBER_VALUE = ?" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095096402");
+            myStmt.setLong(1, empS.getDeptNumber() );
+            myStmt.setLong(2, id);
 
             myStmt.execute();
         } catch (SQLException e) {
