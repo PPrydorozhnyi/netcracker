@@ -112,7 +112,7 @@ public class EmployeeDAO {
         ResultSet rs = null;
         PreparedStatement myStmt = null;
 
-        myStmt = myConn.prepareStatement("select objects.NAME nam, fi_name.TEXT_VALUE fname, " +
+        myStmt = myConn.prepareStatement("select objects.OBJECT_ID idd, objects.NAME nam, fi_name.TEXT_VALUE fname, " +
                 "job.TEXT_VALUE jobb, hiredate.DATE_VALUE hiredatee, sal.NUMBER_VALUE sall, " +
                 "comm.NUMBER_VALUE commm, deptno.NUMBER_VALUE deptnoo " +
                 "from objects join object_types on " +
@@ -165,6 +165,7 @@ public class EmployeeDAO {
 
         while (rs.next()) {
             employee = new Employee();
+            employee.setId(rs.getLong("idd"));
             employee.setLastName(rs.getString("nam"));
             employee.setFirstName(rs.getString("fname"));
             employee.setJob(rs.getString("jobb"));
@@ -357,6 +358,84 @@ public class EmployeeDAO {
                     "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095096402");
             myStmt.setLong(1, empS.getDeptNumber() );
             myStmt.setLong(2, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void deleteEmployee(Employee emp) {
+
+        PreparedStatement myStmt = null;
+        long id = emp.getId();
+        System.out.println(id);
+
+        try {
+            myStmt = myConn.prepareStatement("DELETE FROM objects " +
+                    " WHERE OBJECT_ID = ?");
+            myStmt.setLong(1, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("DELETE FROM params/*(object_id, attr_id, text_value)\n*/" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095081213");
+            myStmt.setLong(1, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("DELETE FROM params/*(object_id, attr_id, text_value)\n*/" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095084373");
+            myStmt.setLong(1, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("DELETE FROM params/*(object_id, attr_id, text_value)\n*/" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095087262");
+            myStmt.setLong(1, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("DELETE FROM params/*(object_id, attr_id, text_value)\n*/" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095090681");
+            myStmt.setLong(1, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("DELETE FROM params/*(object_id, attr_id, text_value)\n*/" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095093511");
+            myStmt.setLong(1, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("DELETE FROM params /*(object_id, attr_id, text_value)\n*/" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095096402");
+            myStmt.setLong(1, id);
 
             myStmt.execute();
         } catch (SQLException e) {

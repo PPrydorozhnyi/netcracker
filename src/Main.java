@@ -31,7 +31,8 @@ public class Main {
         }
 
         //dao.createEmployee(emp);
-        dao.updateEmployee(employees.get(0), emp);
+        //dao.updateEmployee(employees.get(0), emp);
+        //dao.deleteEmployee(employees.get(1));
 
         try {
             dao.close();
