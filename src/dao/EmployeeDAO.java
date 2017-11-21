@@ -4,6 +4,7 @@ import objects.Employee;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * @author P.Pridorozhny
@@ -174,6 +175,102 @@ public class EmployeeDAO {
         }
 
         return employees;
+    }
+
+    public void createEmployee(Employee emp) {
+
+        PreparedStatement myStmt = null;
+        ResultSet rs = null;
+        long id = new Random().nextLong();
+
+        try {
+            rs = myConn.createStatement().executeQuery("SELECT ORA_HASH('objects', 9999) + CURRENT_TIME_MS idd FROM dual");
+            if (rs.next()) {
+                id = rs.getLong("idd");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        emp.setId(id);
+
+        try {
+            myStmt = myConn.prepareStatement("INSERT INTO objects(object_id, OBJECT_TYPE_ID, name) " +
+                    "VALUES(?, 1511093759755, ?)");
+            myStmt.setLong(1, id);
+            myStmt.setString(2, emp.getLastName());
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, text_value)\n" +
+                    "VALUES(?, 1511095081213, ?)");
+            myStmt.setLong(1, id);
+            myStmt.setString(2, emp.getFirstName());
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, text_value) " +
+                    "VALUES(?, 1511095084373, ?)");
+            myStmt.setLong(1, id);
+            myStmt.setString(2, emp.getJob());
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, date_value) " +
+                    "VALUES(?, 1511095087262, ?)");
+            myStmt.setLong(1, id);
+            myStmt.setDate(2, new java.sql.Date(emp.getHiredate().getTimeInMillis()) );
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, number_value)\n" +
+                    "VALUES(?, 1511095090681, ?)");
+            myStmt.setLong(1, id);
+            myStmt.setInt(2, emp.getSalary() );
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, number_value)\n" +
+                    "VALUES(?, 1511095093511, ?)");
+            myStmt.setLong(1, id);
+            myStmt.setInt(2, emp.getCommission() );
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, number_value)\n" +
+                    "VALUES(?, 1511095096402, ?)");
+            myStmt.setLong(1, id);
+            myStmt.setLong(2, emp.getDeptNumber() );
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
 

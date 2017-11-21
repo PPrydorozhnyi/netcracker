@@ -9,6 +9,7 @@ import java.util.GregorianCalendar;
  */
 public class Employee {
 
+    private long id;
     private String firstName;
     private String lastName;
     private String job;
@@ -16,6 +17,14 @@ public class Employee {
     private int salary;
     private int commission;
     private long deptNumber;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public Employee() {
         hiredate = new GregorianCalendar();

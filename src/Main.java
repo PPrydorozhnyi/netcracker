@@ -30,6 +30,8 @@ public class Main {
                 System.out.println(empl);
         }
 
+        dao.createEmployee(emp);
+
         try {
             dao.close();
         } catch (SQLException e) {
@@ -37,6 +39,7 @@ public class Main {
         }
 
         System.out.println(emp);
+
     }
 
 }
