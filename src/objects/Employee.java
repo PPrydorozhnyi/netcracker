@@ -17,6 +17,7 @@ public class Employee {
     private int salary;
     private int commission;
     private long deptNumber;
+    private Department department;
 
     public long getId() {
         return id;
@@ -90,10 +91,18 @@ public class Employee {
         this.deptNumber = deptNumber;
     }
 
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
     @Override
     public String toString() {
 
         return firstName + "\n" + lastName + "\n" + job + "\n" + hiredate.getTime() + "\n" + salary + "\n" +
-                commission + "\n" + deptNumber;
+                commission + "\n" + deptNumber + "\n" + department;
     }
 }
