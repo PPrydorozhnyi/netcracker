@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * @author P.Pridorozhny
@@ -153,193 +154,111 @@ public class DepartmentDAO extends DAO {
 
         return departments;
     }
-//
-//    public void createEmployee(Employee emp) {
-//
-//        PreparedStatement myStmt;
-//        ResultSet rs;
-//        long id = new Random().nextLong();
-//
-//        try {
-//            rs = myConn.createStatement().executeQuery("SELECT ORA_HASH('objects', 9999) + CURRENT_TIME_MS idd FROM dual");
-//            if (rs.next()) {
-//                id = rs.getLong("idd");
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        emp.setId(id);
-//
-//        try {
-//            myStmt = myConn.prepareStatement("INSERT INTO objects(object_id, OBJECT_TYPE_ID, name) " +
-//                    "VALUES(?, 1511093759755, ?)");
-//            myStmt.setLong(1, id);
-//            myStmt.setString(2, emp.getLastName());
-//
-//            myStmt.execute();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, text_value)\n" +
-//                    "VALUES(?, 1511095081213, ?)");
-//            myStmt.setLong(1, id);
-//            myStmt.setString(2, emp.getFirstName());
-//
-//            myStmt.execute();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, text_value) " +
-//                    "VALUES(?, 1511095084373, ?)");
-//            myStmt.setLong(1, id);
-//            myStmt.setString(2, emp.getJob());
-//
-//            myStmt.execute();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, date_value) " +
-//                    "VALUES(?, 1511095087262, ?)");
-//            myStmt.setLong(1, id);
-//            myStmt.setDate(2, new java.sql.Date(emp.getHiredate().getTimeInMillis()) );
-//
-//            myStmt.execute();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, number_value)\n" +
-//                    "VALUES(?, 1511095090681, ?)");
-//            myStmt.setLong(1, id);
-//            myStmt.setInt(2, emp.getSalary() );
-//
-//            myStmt.execute();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, number_value)\n" +
-//                    "VALUES(?, 1511095093511, ?)");
-//            myStmt.setLong(1, id);
-//            myStmt.setInt(2, emp.getCommission() );
-//
-//            myStmt.execute();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, number_value)\n" +
-//                    "VALUES(?, 1511095096402, ?)");
-//            myStmt.setLong(1, id);
-//            myStmt.setLong(2, emp.getDeptNumber() );
-//
-//            myStmt.execute();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-//
-//    public void updateEmployee(Employee empS, Employee empD) {
-//
-//        PreparedStatement myStmt;
-//        long id = empD.getId();
-//
-//        try {
-//            myStmt = myConn.prepareStatement("UPDATE objects " +
-//                    "SET  NAME = ?" +
-//                    " WHERE OBJECT_ID = ?");
-//            myStmt.setString(1, empS.getLastName());
-//            myStmt.setLong(2, id);
-//
-//            myStmt.execute();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            myStmt = myConn.prepareStatement("UPDATE params/*(object_id, attr_id, text_value)\n*/" +
-//                    " SET /*(?, 1511095081213, ?)*/ text_value = ?" +
-//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095081213");
-//            myStmt.setString(1, empS.getFirstName());
-//            myStmt.setLong(2, id);
-//
-//            myStmt.execute();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            myStmt = myConn.prepareStatement("UPDATE params/*(object_id, attr_id, text_value)\n*/" +
-//                    " SET /*(?, 1511095081213, ?)*/ text_value = ?" +
-//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095084373");
-//            myStmt.setString(1, empS.getJob());
-//            myStmt.setLong(2, id);
-//
-//            myStmt.execute();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            myStmt = myConn.prepareStatement("UPDATE params/*(object_id, attr_id, text_value)\n*/" +
-//                    " SET /*(?, 1511095081213, ?)*/ date_value = ?" +
-//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095087262");
-//            myStmt.setDate(1, new java.sql.Date(empS.getHiredate().getTimeInMillis()) );
-//            myStmt.setLong(2, id);
-//
-//            myStmt.execute();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            myStmt = myConn.prepareStatement("UPDATE params/*(object_id, attr_id, text_value)\n*/" +
-//                    " SET /*(?, 1511095081213, ?)*/ NUMBER_VALUE = ?" +
-//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095090681");
-//            myStmt.setInt(1, empS.getSalary() );
-//            myStmt.setLong(2, id);
-//
-//            myStmt.execute();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            myStmt = myConn.prepareStatement("UPDATE params/*(object_id, attr_id, text_value)\n*/" +
-//                    " SET /*(?, 1511095081213, ?)*/ NUMBER_VALUE = ?" +
-//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095093511");
-//            myStmt.setInt(1, empS.getCommission() );
-//            myStmt.setLong(2, id);
-//
-//            myStmt.execute();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            myStmt = myConn.prepareStatement("UPDATE params/*(object_id, attr_id, text_value)\n*/" +
-//                    " SET /*(?, 1511095081213, ?)*/ NUMBER_VALUE = ?" +
-//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095096402");
-//            myStmt.setLong(1, empS.getDeptNumber() );
-//            myStmt.setLong(2, id);
-//
-//            myStmt.execute();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+
+    public void createDepartment(Department dept) {
+
+        PreparedStatement myStmt;
+        ResultSet rs;
+        long id = new Random().nextLong();
+
+        try {
+            rs = myConn.createStatement().executeQuery("SELECT ORA_HASH('objects', 99) + CURRENT_TIME_MS idd FROM dual");
+            if (rs.next()) {
+                id = rs.getLong("idd");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        dept.setId(id);
+
+        try {
+            myStmt = myConn.prepareStatement("INSERT INTO objects(object_id, OBJECT_TYPE_ID, name) " +
+                    "VALUES(?, 1511093783249, ?)");
+            myStmt.setLong(1, id);
+            myStmt.setString(2, dept.getName());
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, text_value)\n" +
+                    "VALUES(?, 1511096763500, ?)");
+            myStmt.setLong(1, id);
+            myStmt.setString(2, dept.getCompanyName());
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, text_value) " +
+                    "VALUES(?, 1511096765915, ?)");
+            myStmt.setLong(1, id);
+            myStmt.setString(2, dept.getLocation());
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        //TODO dolzhni li sozd employees?
+
+    }
+
+    /**
+     *
+     * @param deptS
+     * source - from which we copy
+     * @param deptD
+     * destination - final object which we update
+     */
+    public void updateDepartment(Department deptS, Department deptD) {
+
+        PreparedStatement myStmt;
+        long id = deptD.getId();
+
+        try {
+            myStmt = myConn.prepareStatement("UPDATE objects " +
+                    "SET  NAME = ?" +
+                    " WHERE OBJECT_ID = ?");
+            myStmt.setString(1, deptS.getName());
+            myStmt.setLong(2, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("UPDATE params" +
+                    " SET text_value = ?" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511096763500");
+            myStmt.setString(1, deptS.getCompanyName());
+            myStmt.setLong(2, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("UPDATE params" +
+                    " SET text_value = ?" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511096765915");
+            myStmt.setString(1, deptS.getLocation());
+            myStmt.setLong(2, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 //
 //    public void deleteEmployee(Employee emp) {
 //
