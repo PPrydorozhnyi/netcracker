@@ -3,7 +3,9 @@ package dao;
 import objects.Department;
 import objects.Employee;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -21,7 +23,6 @@ public class EmployeeDAO extends DAO {
     public Employee getByID(long id) throws SQLException {
 
         Employee employee = new Employee();
-        Department department = new Department();
         ResultSet rs;
         PreparedStatement myStmt;
 
@@ -74,6 +75,17 @@ public class EmployeeDAO extends DAO {
         }
         employee.setId(id);
 
+        employee.setDepartment(getDept(employee.getDeptNumber()));
+
+        return employee;
+    }
+
+    private Department getDept(long deptNumber) throws SQLException {
+
+        Department department = new Department();
+        ResultSet rs;
+        PreparedStatement myStmt;
+
         myStmt = myConn.prepareStatement("select objects.NAME nam, comp_name.TEXT_VALUE cName, " +
                 "loc.TEXT_VALUE locc " +
                 "from objects join object_types on " +
@@ -88,20 +100,17 @@ public class EmployeeDAO extends DAO {
                 "join Params loc on loc.attr_id=loc_attr.attr_id" +
                 " and loc.object_id=Objects.object_id" +
                 " WHERE object_types.OBJECT_TYPE_ID = 1511093783249 and objects.OBJECT_ID = ?");
-        myStmt.setLong(1, employee.getDeptNumber());
+        myStmt.setLong(1, deptNumber);
         rs = myStmt.executeQuery();
 
         while (rs.next()) {
-            department.setId(employee.getDeptNumber());
+            department.setId(deptNumber);
             department.setName(rs.getString("nam"));
             department.setCompanyName(rs.getString("cName"));
             department.setLocation(rs.getString("locc"));
         }
 
-
-        employee.setDepartment(department);
-
-        return employee;
+        return department;
     }
 
     public ArrayList<Employee> getByLastName(String lastName) throws SQLException {
@@ -152,15 +161,6 @@ public class EmployeeDAO extends DAO {
         myStmt.setString(1, lastName);
         rs = myStmt.executeQuery();
 
-//        while (rs.next()) {
-//            System.out.println(rs.getString("nam"));
-//            System.out.println(rs.getString("fname"));
-//            System.out.println(rs.getString("jobb"));
-//            System.out.println(rs.getDate("hiredatee"));
-//            System.out.println(rs.getInt("sall"));
-//            System.out.println(rs.getInt("commm"));
-//            System.out.println(rs.getLong("deptnoo"));
-//        }
 
         while (rs.next()) {
             employee = new Employee();
@@ -172,6 +172,7 @@ public class EmployeeDAO extends DAO {
             employee.setSalary(rs.getInt("sall"));
             employee.setCommission(rs.getInt("commm"));
             employee.setDeptNumber(rs.getLong("deptnoo"));
+            employee.setDepartment(getDept(employee.getDeptNumber()));
             employees.add(employee);
         }
 
