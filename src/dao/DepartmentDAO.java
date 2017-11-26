@@ -3,9 +3,9 @@ package dao;
 import objects.Department;
 import objects.Employee;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Random;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * @author P.Pridorozhny
@@ -22,7 +22,6 @@ public class DepartmentDAO extends DAO {
 
     public Department getByID(long id) throws SQLException {
 
-        Employee employee;
         Department department = new Department();
         ResultSet rs;
         PreparedStatement myStmt;
@@ -50,6 +49,17 @@ public class DepartmentDAO extends DAO {
             department.setLocation(rs.getString("locc"));
         }
         department.setId(id);
+        getEmployees(id, department);
+
+
+        return department;
+    }
+
+    private void getEmployees(long id, Department department) throws SQLException {
+
+        Employee employee;
+        ResultSet rs;
+        PreparedStatement myStmt;
 
         myStmt = myConn.prepareStatement("select objects.OBJECT_ID idd, objects.NAME nam, fi_name.TEXT_VALUE fname, " +
                 "job.TEXT_VALUE jobb, hiredate.DATE_VALUE hiredatee, sal.NUMBER_VALUE sall, " +
@@ -85,9 +95,6 @@ public class DepartmentDAO extends DAO {
                 "deptno_attr.name='DEPTNO'" +
                 "join Params deptno on deptno.attr_id=deptno_attr.attr_id and " +
                 "deptno.object_id=objects.object_id " +
-//                "where \"Object_types\".\"name\"='people' and aid.\"number_value\"=11 and \n" +
-//                "apt.\"number_value\"=3;");
-
                 "WHERE object_types.OBJECT_TYPE_ID = 1511093759755 and deptno.NUMBER_VALUE = ?");
         myStmt.setLong(1, id);
         rs = myStmt.executeQuery();
@@ -103,12 +110,10 @@ public class DepartmentDAO extends DAO {
             employee.setSalary(rs.getInt("sall"));
             employee.setCommission(rs.getInt("commm"));
             employee.setDeptNumber(rs.getLong("deptnoo"));
+            employee.setDepartment(department);
 
             department.getEmployees().add(employee);
         }
-
-
-        return department;
     }
 
 //    public ArrayList<Employee> getByLastName(String lastName) throws SQLException {
