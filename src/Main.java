@@ -1,6 +1,7 @@
 import dao.DepartmentDAO;
 import objects.Department;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -63,13 +64,14 @@ public class Main {
 //            e.printStackTrace();
 //        }
 
-//        try {
-//            deptD = dao.getByID(1511687032041L);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            deptD = dao.getByID(1511687032041L);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
 //        dao.updateDepartment(department, deptD);
+       // dao.deleteDepartment(deptD);
 
 //        if (departments != null) {
 //            for (Department dept : departments) {
