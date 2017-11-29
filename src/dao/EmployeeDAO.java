@@ -197,10 +197,11 @@ public class EmployeeDAO extends DAO {
         emp.setId(id);
 
         try {
-            myStmt = myConn.prepareStatement("INSERT INTO objects(object_id, OBJECT_TYPE_ID, name) " +
-                    "VALUES(?, 1511093759755, ?)");
+            myStmt = myConn.prepareStatement("INSERT INTO objects(object_id, OBJECT_TYPE_ID, name, parent_id) " +
+                    "VALUES(?, 1511093759755, ?, ?)");
             myStmt.setLong(1, id);
             myStmt.setString(2, emp.getLastName());
+            myStmt.setLong(3, emp.getDeptNumber());
 
             myStmt.execute();
         } catch (SQLException e) {
@@ -282,10 +283,11 @@ public class EmployeeDAO extends DAO {
 
         try {
             myStmt = myConn.prepareStatement("UPDATE objects " +
-                    "SET  NAME = ?" +
+                    "SET  NAME = ?, parent_id = ?" +
                     " WHERE OBJECT_ID = ?");
             myStmt.setString(1, empS.getLastName());
-            myStmt.setLong(2, id);
+            myStmt.setLong(2, empS.getDeptNumber());
+            myStmt.setLong(3, id);
 
             myStmt.execute();
         } catch (SQLException e) {

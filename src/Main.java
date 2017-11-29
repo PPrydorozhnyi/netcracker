@@ -1,9 +1,3 @@
-import dao.DepartmentDAO;
-import objects.Department;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-
 /**
  * @author P.Pridorozhny
  */
@@ -14,13 +8,14 @@ public class Main {
 //        Employee emp = null;
 //        ArrayList<Employee> employees = null;
 //        try {
-//            emp = dao.getByID(1511094532520L);
+//            emp = dao.getByID(1511094550205L);
 //        } catch (SQLException e) {
 //            e.printStackTrace();
 //        }
 //
 //        try {
-//            employees = dao.getByLastName("WARD");
+//            employees = dao.getByLastName("CLARK");
+//            System.out.println(employees.get(0));
 //        } catch (SQLException e) {
 //            e.printStackTrace();
 //        }
@@ -30,19 +25,19 @@ public class Main {
 //                System.out.println(empl);
 //        }
 
-        //dao.createEmployee(emp);
-        //dao.updateEmployee(employees.get(0), emp);
-        //dao.deleteEmployee(employees.get(1));
+//        dao.createEmployee(emp);
+//        dao.updateEmployee(employees.get(0), emp);
+//        dao.deleteEmployee(emp);
 
 //        dao.close();
 
 
 //        System.out.println(emp);
 //
-        DepartmentDAO dao = new DepartmentDAO();
-        Department department = null;
-        Department deptD = null;
-        ArrayList<Department> departments = new ArrayList<>();
+//        DepartmentDAO dao = new DepartmentDAO();
+//        Department department = null;
+//        Department deptD = null;
+//        ArrayList<Department> departments = new ArrayList<>();
 
 //        try {
 //            department = dao.getByID(1511096690819L);
@@ -64,11 +59,11 @@ public class Main {
 //            e.printStackTrace();
 //        }
 
-        try {
-            deptD = dao.getByID(1511687032041L);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            deptD = dao.getByID(1511687032041L);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
 //        dao.updateDepartment(department, deptD);
        // dao.deleteDepartment(deptD);
@@ -80,7 +75,7 @@ public class Main {
 //            }
 //        }
 
-        dao.close();
+//        dao.close();
 
     }
 
