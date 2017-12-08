@@ -12,14 +12,23 @@ public class Department {
     private String companyName;
     private String location;
     private ArrayList<Employee> employees = new ArrayList<>();
+    private long version;
+
+    public Department() {
+
+    }
+
+    public Department(long id) {
+        this.id = id;
+    }
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+//    public void setId(long id) {
+//        this.id = id;
+//    }
 
     public String getName() {
         return name;
@@ -53,8 +62,24 @@ public class Department {
         this.companyName = companyName;
     }
 
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
-        return name + " " + companyName + " " + location;
+        return name + " " + companyName + " " + location + " " + version;
+    }
+
+    public void copy(Department dept) {
+        name = dept.getName();
+        companyName = dept.getCompanyName();
+        location = dept.getLocation();
+        employees = dept.getEmployees();
+        version = dept.getVersion();
     }
 }

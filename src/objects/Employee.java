@@ -18,14 +18,20 @@ public class Employee {
     private int commission;
     private long deptNumber;
     private Department department;
+    private long version;
+
+    public Employee(long id) {
+        this.id = id;
+        hiredate = new GregorianCalendar();
+    }
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+//    public void setId(long id) {
+//        this.id = id;
+//    }
 
     public Employee() {
         hiredate = new GregorianCalendar();
@@ -99,10 +105,30 @@ public class Employee {
         this.department = department;
     }
 
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
 
         return firstName + "\n" + lastName + "\n" + job + "\n" + hiredate.getTime() + "\n" + salary + "\n" +
-                commission + "\n" + deptNumber + "\n" + department;
+                commission + "\n" + deptNumber + "\n" + department + "\n" + version;
+    }
+
+    public void copy(Employee employee) {
+        department = employee.getDepartment();
+        deptNumber = employee.getDeptNumber();
+        commission = employee.getCommission();
+        salary = employee.getSalary();
+        firstName = employee.getFirstName();
+        lastName = employee.getLastName();
+        job = employee.getJob();
+        hiredate = employee.getHiredate();
+        version = employee.getVersion();
     }
 }

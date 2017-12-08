@@ -22,11 +22,11 @@ public class EmployeeDAO extends DAO {
 
     public Employee getByID(long id) throws SQLException {
 
-        Employee employee = new Employee();
+        Employee employee = new Employee(id);
         ResultSet rs;
         PreparedStatement myStmt;
 
-        myStmt = myConn.prepareStatement("select objects.NAME nam, fi_name.TEXT_VALUE fname, " +
+        myStmt = myConn.prepareStatement("select objects.NAME nam, objects.vers vers, fi_name.TEXT_VALUE fname, " +
                 "job.TEXT_VALUE jobb, hiredate.DATE_VALUE hiredatee, sal.NUMBER_VALUE sall, " +
                 "comm.NUMBER_VALUE commm, deptno.NUMBER_VALUE deptnoo " +
                 "from objects join object_types on " +
@@ -66,6 +66,7 @@ public class EmployeeDAO extends DAO {
 
         if (rs.next()) {
             employee.setLastName(rs.getString("nam"));
+            employee.setVersion(rs.getLong("vers"));
             employee.setFirstName(rs.getString("fname"));
             employee.setJob(rs.getString("jobb"));
             employee.setHiredate(rs.getDate("hiredatee"));
@@ -73,7 +74,6 @@ public class EmployeeDAO extends DAO {
             employee.setCommission(rs.getInt("commm"));
             employee.setDeptNumber(rs.getLong("deptnoo"));
         }
-        employee.setId(id);
 
         employee.setDepartment(getDept(employee.getDeptNumber()));
 
@@ -126,7 +126,7 @@ public class EmployeeDAO extends DAO {
         ResultSet rs;
         PreparedStatement myStmt ;
 
-        myStmt = myConn.prepareStatement("select objects.OBJECT_ID idd, objects.NAME nam, fi_name.TEXT_VALUE fname, " +
+        myStmt = myConn.prepareStatement("select objects.OBJECT_ID idd, objects.vers vers, objects.NAME nam, fi_name.TEXT_VALUE fname, " +
                 "job.TEXT_VALUE jobb, hiredate.DATE_VALUE hiredatee, sal.NUMBER_VALUE sall, " +
                 "comm.NUMBER_VALUE commm, deptno.NUMBER_VALUE deptnoo " +
                 "from objects join object_types on " +
@@ -169,8 +169,9 @@ public class EmployeeDAO extends DAO {
 
 
         while (rs.next()) {
-            employee = new Employee();
-            employee.setId(rs.getLong("idd"));
+            employee = new Employee(rs.getLong("idd"));
+//            employee.setId(rs.getLong("idd"));
+            employee.setVersion(rs.getLong("vers"));
             employee.setLastName(rs.getString("nam"));
             employee.setFirstName(rs.getString("fname"));
             employee.setJob(rs.getString("jobb"));
@@ -187,6 +188,7 @@ public class EmployeeDAO extends DAO {
 
     public void createEmployee(Employee emp) {
 
+        Employee employee;
         PreparedStatement myStmt;
         ResultSet rs;
         long id = new Random().nextLong();
@@ -200,14 +202,17 @@ public class EmployeeDAO extends DAO {
             e.printStackTrace();
         }
 
-        emp.setId(id);
+        employee = new Employee(id);
+        employee.copy(emp);
+        emp = employee;
 
         try {
-            myStmt = myConn.prepareStatement("INSERT INTO objects(object_id, OBJECT_TYPE_ID, name, parent_id) " +
-                    "VALUES(?, 1511093759755, ?, ?)");
+            myStmt = myConn.prepareStatement("INSERT INTO objects(object_id, OBJECT_TYPE_ID, name, parent_id, vers) " +
+                    "VALUES(?, 1511093759755, ?, ?, ?)");
             myStmt.setLong(1, id);
             myStmt.setString(2, emp.getLastName());
             myStmt.setLong(3, emp.getDeptNumber());
+            myStmt.setLong(4, emp.getVersion());
 
             myStmt.execute();
         } catch (SQLException e) {
@@ -289,11 +294,12 @@ public class EmployeeDAO extends DAO {
 
         try {
             myStmt = myConn.prepareStatement("UPDATE objects " +
-                    "SET  NAME = ?, parent_id = ?" +
+                    "SET  NAME = ?, parent_id = ?, vers = ?" +
                     " WHERE OBJECT_ID = ?");
             myStmt.setString(1, empS.getLastName());
             myStmt.setLong(2, empS.getDeptNumber());
-            myStmt.setLong(3, id);
+            myStmt.setLong(3, empS.getVersion());
+            myStmt.setLong(4, id);
 
             myStmt.execute();
         } catch (SQLException e) {

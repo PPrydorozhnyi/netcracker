@@ -24,11 +24,11 @@ public class DepartmentDAO extends DAO {
 
     public Department getByID(long id) throws SQLException {
 
-        Department department = new Department();
+        Department department = new Department(id);
         ResultSet rs;
         PreparedStatement myStmt;
 
-        myStmt = myConn.prepareStatement("select objects.NAME nam, comp_name.TEXT_VALUE cName, " +
+        myStmt = myConn.prepareStatement("select objects.NAME nam, objects.vers vers, comp_name.TEXT_VALUE cName, " +
                 "loc.TEXT_VALUE locc " +
                 "from objects join object_types on " +
                 "object_types.object_type_id = objects.object_type_id " +
@@ -47,10 +47,11 @@ public class DepartmentDAO extends DAO {
 
         while (rs.next()) {
             department.setName(rs.getString("nam"));
+            department.setVersion(rs.getLong("vers"));
             department.setCompanyName(rs.getString("cName"));
             department.setLocation(rs.getString("locc"));
         }
-        department.setId(id);
+//        department.setId(id);
         getEmployees(id, department);
 
 
@@ -63,7 +64,7 @@ public class DepartmentDAO extends DAO {
         ResultSet rs;
         PreparedStatement myStmt;
 
-        myStmt = myConn.prepareStatement("select objects.OBJECT_ID idd, objects.NAME nam, fi_name.TEXT_VALUE fname, " +
+        myStmt = myConn.prepareStatement("select objects.OBJECT_ID idd,  objects.vers vers, objects.NAME nam, fi_name.TEXT_VALUE fname, " +
                 "job.TEXT_VALUE jobb, hiredate.DATE_VALUE hiredatee, sal.NUMBER_VALUE sall, " +
                 "comm.NUMBER_VALUE commm, deptno.NUMBER_VALUE deptnoo " +
                 "from objects join object_types on " +
@@ -102,10 +103,10 @@ public class DepartmentDAO extends DAO {
         rs = myStmt.executeQuery();
 
         while (rs.next()) {
-            employee = new Employee();
+            employee = new Employee(rs.getLong("idd"));
 
-            employee.setId(rs.getLong("idd"));
             employee.setLastName(rs.getString("nam"));
+            employee.setVersion(rs.getLong("vers"));
             employee.setFirstName(rs.getString("fname"));
             employee.setJob(rs.getString("jobb"));
             employee.setHiredate(rs.getDate("hiredatee"));
@@ -125,7 +126,7 @@ public class DepartmentDAO extends DAO {
         ResultSet rs;
         PreparedStatement myStmt ;
 
-        myStmt = myConn.prepareStatement("select objects.OBJECT_ID idd, objects.NAME nam, comp_name.TEXT_VALUE cName, " +
+        myStmt = myConn.prepareStatement("select objects.OBJECT_ID idd, objects.vers vers, objects.NAME nam, comp_name.TEXT_VALUE cName, " +
                 "loc.TEXT_VALUE locc " +
                 "from objects join object_types on " +
                 "object_types.object_type_id = objects.object_type_id " +
@@ -143,9 +144,10 @@ public class DepartmentDAO extends DAO {
         rs = myStmt.executeQuery();
 
         while (rs.next()) {
-            department = new Department();
-            department.setId(rs.getLong("idd"));
+            department = new Department(rs.getLong("idd"));
+//            department.setId();
             department.setName(rs.getString("nam"));
+            department.setVersion(rs.getLong("vers"));
             department.setCompanyName(rs.getString("cName"));
             department.setLocation(rs.getString("locc"));
             getEmployees(department.getId(), department);
@@ -157,6 +159,7 @@ public class DepartmentDAO extends DAO {
 
     public void createDepartment(Department dept) {
 
+        Department department;
         PreparedStatement myStmt;
         ResultSet rs;
         long id = new Random().nextLong();
@@ -170,13 +173,17 @@ public class DepartmentDAO extends DAO {
             e.printStackTrace();
         }
 
-        dept.setId(id);
+//        dept.setId(id);
+        department = new Department(id);
+        department.copy(dept);
+        dept = department;
 
         try {
-            myStmt = myConn.prepareStatement("INSERT INTO objects(object_id, OBJECT_TYPE_ID, name) " +
-                    "VALUES(?, 1511093783249, ?)");
+            myStmt = myConn.prepareStatement("INSERT INTO objects(object_id, OBJECT_TYPE_ID, name, vers) " +
+                    "VALUES(?, 1511093783249, ?, ?)");
             myStmt.setLong(1, id);
             myStmt.setString(2, dept.getName());
+            myStmt.setLong(3, dept.getVersion());
 
             myStmt.execute();
         } catch (SQLException e) {
@@ -205,7 +212,6 @@ public class DepartmentDAO extends DAO {
             e.printStackTrace();
         }
 
-        //TODO dolzhni li sozd employees?
 
     }
 
@@ -223,10 +229,11 @@ public class DepartmentDAO extends DAO {
 
         try {
             myStmt = myConn.prepareStatement("UPDATE objects " +
-                    "SET  NAME = ?" +
+                    "SET  NAME = ?, vers = ?" +
                     " WHERE OBJECT_ID = ?");
             myStmt.setString(1, deptS.getName());
-            myStmt.setLong(2, id);
+            myStmt.setLong(2, deptS.getVersion());
+            myStmt.setLong(3, id);
 
             myStmt.execute();
         } catch (SQLException e) {

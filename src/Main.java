@@ -1,17 +1,22 @@
+import dao.EmployeeDAO;
+import objects.Employee;
+
+import java.sql.SQLException;
+
 /**
  * @author P.Pridorozhny
  */
 public class Main {
 
     public static void main(String[] args) {
-//        EmployeeDAO dao = new EmployeeDAO();
-//        Employee emp = null;
+        EmployeeDAO dao = new EmployeeDAO();
+        Employee emp = null;
 //        ArrayList<Employee> employees = null;
-//        try {
-//            emp = dao.getByID(1511094550205L);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            emp = dao.getByID(1511094532520L);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 //
 //        try {
 //            employees = dao.getByLastName("CLARK");
@@ -32,7 +37,7 @@ public class Main {
 //        dao.close();
 
 
-//        System.out.println(emp);
+        System.out.println(emp);
 //
 //        DepartmentDAO dao = new DepartmentDAO();
 //        Department department = null;
