@@ -82,33 +82,39 @@ public class EmployeeDAO extends DAO {
 
     private Department getDept(long deptNumber) throws SQLException {
 
-        Department department = new Department();
-        ResultSet rs;
-        PreparedStatement myStmt;
+        Department department;
+//        ResultSet rs;
+//        PreparedStatement myStmt;
+//
+//        myStmt = myConn.prepareStatement("select objects.NAME nam, comp_name.TEXT_VALUE cName, " +
+//                "loc.TEXT_VALUE locc " +
+//                "from objects join object_types on " +
+//                "object_types.object_type_id = objects.object_type_id " +
+//                "join attr on attr.object_type_id = object_types.object_type_id " +
+//                "and attr.name='COMPANY' " +
+//                "join params comp_name on comp_name.attr_id = attr.attr_id and " +
+//                "comp_name.object_id = objects.object_id " +
+//                "join attr loc_attr on " +
+//                "loc_attr.object_type_id = Object_types.object_type_id and " +
+//                "loc_attr.name='LOCATION'" +
+//                "join Params loc on loc.attr_id=loc_attr.attr_id" +
+//                " and loc.object_id=Objects.object_id" +
+//                " WHERE object_types.OBJECT_TYPE_ID = 1511093783249 and objects.OBJECT_ID = ?");
+//        myStmt.setLong(1, deptNumber);
+//        rs = myStmt.executeQuery();
+//
+//        while (rs.next()) {
+//            department.setId(deptNumber);
+//            department.setName(rs.getString("nam"));
+//            department.setCompanyName(rs.getString("cName"));
+//            department.setLocation(rs.getString("locc"));
+//        }
 
-        myStmt = myConn.prepareStatement("select objects.NAME nam, comp_name.TEXT_VALUE cName, " +
-                "loc.TEXT_VALUE locc " +
-                "from objects join object_types on " +
-                "object_types.object_type_id = objects.object_type_id " +
-                "join attr on attr.object_type_id = object_types.object_type_id " +
-                "and attr.name='COMPANY' " +
-                "join params comp_name on comp_name.attr_id = attr.attr_id and " +
-                "comp_name.object_id = objects.object_id " +
-                "join attr loc_attr on " +
-                "loc_attr.object_type_id = Object_types.object_type_id and " +
-                "loc_attr.name='LOCATION'" +
-                "join Params loc on loc.attr_id=loc_attr.attr_id" +
-                " and loc.object_id=Objects.object_id" +
-                " WHERE object_types.OBJECT_TYPE_ID = 1511093783249 and objects.OBJECT_ID = ?");
-        myStmt.setLong(1, deptNumber);
-        rs = myStmt.executeQuery();
+        DepartmentDAO  departmentDAO = new DepartmentDAO();
 
-        while (rs.next()) {
-            department.setId(deptNumber);
-            department.setName(rs.getString("nam"));
-            department.setCompanyName(rs.getString("cName"));
-            department.setLocation(rs.getString("locc"));
-        }
+         department = departmentDAO.getByID(deptNumber);
+
+        departmentDAO.close();
 
         return department;
     }
