@@ -1,6 +1,7 @@
 package objects;
 
 import cache.Cacheable;
+import objects.types.EntitiesTypes;
 
 import java.util.ArrayList;
 
@@ -15,15 +16,18 @@ public class Department implements Cacheable {
     private String location;
     private ArrayList<Employee> employees = new ArrayList<>();
     private long version;
+    private EntitiesTypes type;
 
     public Department() {
-
+        type = EntitiesTypes.DEPARTMENT;
     }
 
     public Department(long id) {
         this.id = id;
+        type = EntitiesTypes.DEPARTMENT;
     }
 
+    @Override
     public long getId() {
         return id;
     }
@@ -73,6 +77,11 @@ public class Department implements Cacheable {
     }
 
     @Override
+    public EntitiesTypes getType() {
+        return type;
+    }
+
+    @Override
     public String toString() {
         return name + " " + companyName + " " + location + " " + version;
     }
@@ -84,4 +93,5 @@ public class Department implements Cacheable {
         employees = dept.getEmployees();
         version = dept.getVersion();
     }
+
 }

@@ -1,6 +1,5 @@
 package dao;
 
-import cache.Cache;
 import objects.Department;
 import objects.Employee;
 
@@ -17,7 +16,6 @@ public class EmployeeDAO extends DAO {
 
     public EmployeeDAO() {
 
-        openConnection();
     }
 
 
@@ -25,15 +23,11 @@ public class EmployeeDAO extends DAO {
 
         Employee employee;
 
-        employee = (Employee) Cache.getCache().get(id);
-
-        if (employee != null) {
-            return employee;
-        }
-
         employee = new Employee(id);
         ResultSet rs;
         PreparedStatement myStmt;
+
+        openConnection();
 
         myStmt = myConn.prepareStatement("select objects.NAME nam, objects.vers vers, fi_name.TEXT_VALUE fname, " +
                 "job.TEXT_VALUE jobb, hiredate.DATE_VALUE hiredatee, sal.NUMBER_VALUE sall, " +
@@ -71,6 +65,8 @@ public class EmployeeDAO extends DAO {
                 "deptno.object_id=objects.object_id " +
                 "WHERE object_types.OBJECT_TYPE_ID = 1511093759755 and objects.OBJECT_ID = ?");
         myStmt.setLong(1, id);
+
+
         rs = myStmt.executeQuery();
 
         if (rs.next()) {
@@ -85,8 +81,7 @@ public class EmployeeDAO extends DAO {
         }
 
         employee.setDepartment(getDept(employee.getDeptNumber()));
-
-        Cache.getCache().put(id, employee);
+        close();
 
         return employee;
     }
@@ -96,6 +91,8 @@ public class EmployeeDAO extends DAO {
         Department department;
 
         DepartmentDAO  departmentDAO = new DepartmentDAO();
+
+        departmentDAO.openConnection();
 
          department = departmentDAO.getByID(deptNumber);
 
@@ -110,6 +107,8 @@ public class EmployeeDAO extends DAO {
         Employee employee;
         ResultSet rs;
         PreparedStatement myStmt ;
+
+        openConnection();
 
         myStmt = myConn.prepareStatement("select objects.OBJECT_ID idd, objects.vers vers, objects.NAME nam, fi_name.TEXT_VALUE fname, " +
                 "job.TEXT_VALUE jobb, hiredate.DATE_VALUE hiredatee, sal.NUMBER_VALUE sall, " +
@@ -150,6 +149,7 @@ public class EmployeeDAO extends DAO {
 
                 "WHERE object_types.OBJECT_TYPE_ID = 1511093759755 and objects.NAME = ?");
         myStmt.setString(1, lastName);
+
         rs = myStmt.executeQuery();
 
 
@@ -167,18 +167,21 @@ public class EmployeeDAO extends DAO {
             employee.setDepartment(getDept(employee.getDeptNumber()));
             employees.add(employee);
 
-            Cache.getCache().put(employee.getId(), employee);
         }
+
+        close();
 
         return employees;
     }
 
-    public void createEmployee(Employee emp) {
+    public Employee createEmployee(Employee emp) {
 
         Employee employee;
         PreparedStatement myStmt;
         ResultSet rs;
         long id = new Random().nextLong();
+
+        openConnection();
 
         try {
             rs = myConn.createStatement().executeQuery("SELECT ORA_HASH('objects', 9999) + CURRENT_TIME_MS idd FROM dual");
@@ -272,14 +275,17 @@ public class EmployeeDAO extends DAO {
             e.printStackTrace();
         }
 
-        Cache.getCache().put(id, employee);
+        close();
 
+        return employee;
     }
 
     public void updateEmployee(Employee empS) {
 
         PreparedStatement myStmt;
         long id = empS.getId();
+
+        openConnection();
 
         try {
             myStmt = myConn.prepareStatement("UPDATE objects " +
@@ -367,7 +373,8 @@ public class EmployeeDAO extends DAO {
             e.printStackTrace();
         }
 
-        Cache.getCache().put(id, empS);
+        close();
+
 
     }
 
@@ -376,6 +383,8 @@ public class EmployeeDAO extends DAO {
         PreparedStatement myStmt;
         long id = emp.getId();
         System.out.println(id);
+
+        openConnection();
 
         try {
             myStmt = myConn.prepareStatement("DELETE FROM objects " +
@@ -446,6 +455,8 @@ public class EmployeeDAO extends DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        close();
 
     }
 

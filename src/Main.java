@@ -1,7 +1,7 @@
-import dao.EmployeeDAO;
+import cache.Cache;
+import objects.Department;
 import objects.Employee;
-
-import java.sql.SQLException;
+import objects.types.EntitiesTypes;
 
 /**
  * @author P.Pridorozhny
@@ -9,14 +9,29 @@ import java.sql.SQLException;
 public class Main {
 
     public static void main(String[] args) {
-        EmployeeDAO dao = new EmployeeDAO();
+
+
+        Cache cache = Cache.getCache();
         Employee emp = null;
-//        ArrayList<Employee> employees = null;
-        try {
-            emp = dao.getByID(1511094532520L);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Department department = null;
+
+        emp = (Employee) cache.get(1511094532520L, EntitiesTypes.EMPLOYEE);
+//        cache.create(emp);
+//        System.out.println(emp.getId());
+//        cache.delete(emp);
+//        emp.setVersion(3);
+//        cache.update(emp);
+        department = (Department) cache.get(1511096690819L, EntitiesTypes.DEPARTMENT);
+
+
+//        EmployeeDAO dao = new EmployeeDAO();
+//
+////        ArrayList<Employee> employees = null;
+//        try {
+//            emp = dao.getByID(1511094532520L);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
 //
 //        try {
@@ -38,7 +53,8 @@ public class Main {
 //        dao.close();
 
 
-        System.out.println(emp);
+//        System.out.println(emp);
+//        System.out.println(department);
 //
 //        DepartmentDAO dao = new DepartmentDAO();
 //        Department department = null;

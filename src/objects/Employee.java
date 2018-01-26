@@ -1,6 +1,7 @@
 package objects;
 
 import cache.Cacheable;
+import objects.types.EntitiesTypes;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -21,12 +22,15 @@ public class Employee implements Cacheable {
     private long deptNumber;
     private Department department;
     private long version;
+    private EntitiesTypes type;
 
     public Employee(long id) {
         this.id = id;
         hiredate = new GregorianCalendar();
+        type = EntitiesTypes.EMPLOYEE;
     }
 
+    @Override
     public long getId() {
         return id;
     }
@@ -37,6 +41,7 @@ public class Employee implements Cacheable {
 
     public Employee() {
         hiredate = new GregorianCalendar();
+        type = EntitiesTypes.EMPLOYEE;
     }
 
     public String getFirstName() {
@@ -114,6 +119,12 @@ public class Employee implements Cacheable {
     public void setVersion(long version) {
         this.version = version;
     }
+
+    @Override
+    public EntitiesTypes getType() {
+        return type;
+    }
+
 
     @Override
     public String toString() {

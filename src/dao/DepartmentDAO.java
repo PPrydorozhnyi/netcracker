@@ -1,6 +1,5 @@
 package dao;
 
-import cache.Cache;
 import objects.Department;
 import objects.Employee;
 
@@ -19,7 +18,6 @@ public class DepartmentDAO extends DAO {
 
     public DepartmentDAO() {
 
-        openConnection();
     }
 
 
@@ -27,14 +25,11 @@ public class DepartmentDAO extends DAO {
 
         Department department;
 
-        department = (Department) Cache.getCache().get(id);
-
-        if (department != null)
-            return department;
-
         department = new Department(id);
         ResultSet rs;
         PreparedStatement myStmt;
+
+        openConnection();
 
         myStmt = myConn.prepareStatement("select objects.NAME nam, objects.vers vers, comp_name.TEXT_VALUE cName, " +
                 "loc.TEXT_VALUE locc " +
@@ -51,7 +46,9 @@ public class DepartmentDAO extends DAO {
                 " and loc.object_id=Objects.object_id" +
                 " WHERE object_types.OBJECT_TYPE_ID = 1511093783249 and objects.OBJECT_ID = ?");
         myStmt.setLong(1, id);
+
         rs = myStmt.executeQuery();
+
 
         while (rs.next()) {
             department.setName(rs.getString("nam"));
@@ -61,8 +58,7 @@ public class DepartmentDAO extends DAO {
         }
 //        department.setId(id);
         getEmployees(id, department);
-
-        Cache.getCache().put(id, department);
+        close();
 
         return department;
     }
@@ -109,7 +105,9 @@ public class DepartmentDAO extends DAO {
                 "deptno.object_id=objects.object_id " +
                 "WHERE object_types.OBJECT_TYPE_ID = 1511093759755 and deptno.NUMBER_VALUE = ?");
         myStmt.setLong(1, id);
+
         rs = myStmt.executeQuery();
+
 
         while (rs.next()) {
             employee = new Employee(rs.getLong("idd"));
@@ -135,6 +133,8 @@ public class DepartmentDAO extends DAO {
         ResultSet rs;
         PreparedStatement myStmt ;
 
+        openConnection();
+
         myStmt = myConn.prepareStatement("select objects.OBJECT_ID idd, objects.vers vers, objects.NAME nam, comp_name.TEXT_VALUE cName, " +
                 "loc.TEXT_VALUE locc " +
                 "from objects join object_types on " +
@@ -150,7 +150,9 @@ public class DepartmentDAO extends DAO {
                 " and loc.object_id=Objects.object_id " +
                 "WHERE object_types.OBJECT_TYPE_ID = 1511093783249 and objects.NAME = ?");
         myStmt.setString(1, deptName);
+
         rs = myStmt.executeQuery();
+
 
         while (rs.next()) {
             department = new Department(rs.getLong("idd"));
@@ -161,18 +163,21 @@ public class DepartmentDAO extends DAO {
             department.setLocation(rs.getString("locc"));
             getEmployees(department.getId(), department);
             departments.add(department);
-            Cache.getCache().put(department.getId(), department);
         }
+
+        close();
 
         return departments;
     }
 
-    public void createDepartment(Department dept) {
+    public Department createDepartment(Department dept) {
 
         Department department;
         PreparedStatement myStmt;
         ResultSet rs;
         long id = new Random().nextLong();
+
+        openConnection();
 
         try {
             rs = myConn.createStatement().executeQuery("SELECT ORA_HASH('objects', 99) + CURRENT_TIME_MS idd FROM dual");
@@ -222,7 +227,9 @@ public class DepartmentDAO extends DAO {
             e.printStackTrace();
         }
 
-        Cache.getCache().put(id, department);
+        close();
+
+        return department;
 
     }
 
@@ -237,6 +244,7 @@ public class DepartmentDAO extends DAO {
         PreparedStatement myStmt;
         long id = deptS.getId();
 
+        openConnection();
         try {
             myStmt = myConn.prepareStatement("UPDATE objects " +
                     "SET  NAME = ?, vers = ?" +
@@ -274,7 +282,8 @@ public class DepartmentDAO extends DAO {
             e.printStackTrace();
         }
 
-        Cache.getCache().put(id, deptS);
+        close();
+
 
     }
 
@@ -283,6 +292,8 @@ public class DepartmentDAO extends DAO {
         PreparedStatement myStmt;
         long id = dept.getId();
         //System.out.println(id);
+
+        openConnection();
 
         try {
             myStmt = myConn.prepareStatement("DELETE FROM objects" +
@@ -313,6 +324,8 @@ public class DepartmentDAO extends DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        close();
 
     }
 
