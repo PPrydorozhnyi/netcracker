@@ -8,4 +8,5 @@ import objects.types.EntitiesTypes;
 public interface Cacheable {
     EntitiesTypes getType();
     long getId();
+    Cacheable copyWithID();
 }

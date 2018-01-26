@@ -109,7 +109,7 @@ public class Cache {
 
         readLock.unlock();
 
-        return obj;
+        return obj.copyWithID();
 
     }
 

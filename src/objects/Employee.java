@@ -144,4 +144,20 @@ public class Employee implements Cacheable {
         hiredate = employee.getHiredate();
         version = employee.getVersion();
     }
+
+    @Override
+    public Cacheable copyWithID() {
+        Employee employee = new Employee(id);
+        employee.setVersion(version);
+        employee.setDepartment(department);
+        employee.setSalary(salary);
+        employee.setDeptNumber(deptNumber);
+        employee.setCommission(commission);
+        employee.setFirstName(firstName);
+        employee.setLastName(lastName);
+        employee.setJob(job);
+        employee.setHiredate(hiredate);
+
+        return employee;
+    }
 }

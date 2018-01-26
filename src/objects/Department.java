@@ -94,4 +94,19 @@ public class Department implements Cacheable {
         version = dept.getVersion();
     }
 
+    @Override
+    public Cacheable copyWithID() {
+
+        Department department = new Department(id);
+
+        department.setVersion(version);
+        department.setName(name);
+        department.setCompanyName(companyName);
+        department.setLocation(location);
+        department.setEmployees(employees);
+
+//        TODO: deepcopy employees
+        return department;
+    }
+
 }
