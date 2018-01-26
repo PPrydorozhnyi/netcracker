@@ -17,6 +17,7 @@ public class Main {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
 //
 //        try {
 //            employees = dao.getByLastName("CLARK");

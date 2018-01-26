@@ -1,11 +1,13 @@
 package objects;
 
+import cache.Cacheable;
+
 import java.util.ArrayList;
 
 /**
  * @author P.Pridorozhny
  */
-public class Department {
+public class Department implements Cacheable {
 
     private long id;
     private String name;

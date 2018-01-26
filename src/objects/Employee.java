@@ -1,5 +1,7 @@
 package objects;
 
+import cache.Cacheable;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -7,7 +9,7 @@ import java.util.GregorianCalendar;
 /**
  * @author P.Pridorozhny
  */
-public class Employee {
+public class Employee implements Cacheable {
 
     private long id;
     private String firstName;

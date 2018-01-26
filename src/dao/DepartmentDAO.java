@@ -1,5 +1,6 @@
 package dao;
 
+import cache.Cache;
 import objects.Department;
 import objects.Employee;
 
@@ -24,7 +25,14 @@ public class DepartmentDAO extends DAO {
 
     public Department getByID(long id) throws SQLException {
 
-        Department department = new Department(id);
+        Department department;
+
+        department = (Department) Cache.getCache().get(id);
+
+        if (department != null)
+            return department;
+
+        department = new Department(id);
         ResultSet rs;
         PreparedStatement myStmt;
 
@@ -54,6 +62,7 @@ public class DepartmentDAO extends DAO {
 //        department.setId(id);
         getEmployees(id, department);
 
+        Cache.getCache().put(id, department);
 
         return department;
     }
@@ -152,6 +161,7 @@ public class DepartmentDAO extends DAO {
             department.setLocation(rs.getString("locc"));
             getEmployees(department.getId(), department);
             departments.add(department);
+            Cache.getCache().put(department.getId(), department);
         }
 
         return departments;
@@ -212,6 +222,7 @@ public class DepartmentDAO extends DAO {
             e.printStackTrace();
         }
 
+        Cache.getCache().put(id, department);
 
     }
 
@@ -219,13 +230,12 @@ public class DepartmentDAO extends DAO {
      *
      * @param deptS
      * source - from which we copy
-     * @param deptD
-     * destination - final object which we update
+     *
      */
-    public void updateDepartment(Department deptS, Department deptD) {
+    public void updateDepartment(Department deptS) {
 
         PreparedStatement myStmt;
-        long id = deptD.getId();
+        long id = deptS.getId();
 
         try {
             myStmt = myConn.prepareStatement("UPDATE objects " +
@@ -264,6 +274,7 @@ public class DepartmentDAO extends DAO {
             e.printStackTrace();
         }
 
+        Cache.getCache().put(id, deptS);
 
     }
 

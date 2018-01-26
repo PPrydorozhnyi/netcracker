@@ -1,5 +1,6 @@
 package dao;
 
+import cache.Cache;
 import objects.Department;
 import objects.Employee;
 
@@ -22,7 +23,15 @@ public class EmployeeDAO extends DAO {
 
     public Employee getByID(long id) throws SQLException {
 
-        Employee employee = new Employee(id);
+        Employee employee;
+
+        employee = (Employee) Cache.getCache().get(id);
+
+        if (employee != null) {
+            return employee;
+        }
+
+        employee = new Employee(id);
         ResultSet rs;
         PreparedStatement myStmt;
 
@@ -77,38 +86,14 @@ public class EmployeeDAO extends DAO {
 
         employee.setDepartment(getDept(employee.getDeptNumber()));
 
+        Cache.getCache().put(id, employee);
+
         return employee;
     }
 
     private Department getDept(long deptNumber) throws SQLException {
 
         Department department;
-//        ResultSet rs;
-//        PreparedStatement myStmt;
-//
-//        myStmt = myConn.prepareStatement("select objects.NAME nam, comp_name.TEXT_VALUE cName, " +
-//                "loc.TEXT_VALUE locc " +
-//                "from objects join object_types on " +
-//                "object_types.object_type_id = objects.object_type_id " +
-//                "join attr on attr.object_type_id = object_types.object_type_id " +
-//                "and attr.name='COMPANY' " +
-//                "join params comp_name on comp_name.attr_id = attr.attr_id and " +
-//                "comp_name.object_id = objects.object_id " +
-//                "join attr loc_attr on " +
-//                "loc_attr.object_type_id = Object_types.object_type_id and " +
-//                "loc_attr.name='LOCATION'" +
-//                "join Params loc on loc.attr_id=loc_attr.attr_id" +
-//                " and loc.object_id=Objects.object_id" +
-//                " WHERE object_types.OBJECT_TYPE_ID = 1511093783249 and objects.OBJECT_ID = ?");
-//        myStmt.setLong(1, deptNumber);
-//        rs = myStmt.executeQuery();
-//
-//        while (rs.next()) {
-//            department.setId(deptNumber);
-//            department.setName(rs.getString("nam"));
-//            department.setCompanyName(rs.getString("cName"));
-//            department.setLocation(rs.getString("locc"));
-//        }
 
         DepartmentDAO  departmentDAO = new DepartmentDAO();
 
@@ -181,6 +166,8 @@ public class EmployeeDAO extends DAO {
             employee.setDeptNumber(rs.getLong("deptnoo"));
             employee.setDepartment(getDept(employee.getDeptNumber()));
             employees.add(employee);
+
+            Cache.getCache().put(employee.getId(), employee);
         }
 
         return employees;
@@ -285,12 +272,14 @@ public class EmployeeDAO extends DAO {
             e.printStackTrace();
         }
 
+        Cache.getCache().put(id, employee);
+
     }
 
-    public void updateEmployee(Employee empS, Employee empD) {
+    public void updateEmployee(Employee empS) {
 
         PreparedStatement myStmt;
-        long id = empD.getId();
+        long id = empS.getId();
 
         try {
             myStmt = myConn.prepareStatement("UPDATE objects " +
@@ -377,6 +366,8 @@ public class EmployeeDAO extends DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        Cache.getCache().put(id, empS);
 
     }
 
