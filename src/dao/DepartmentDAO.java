@@ -31,36 +31,51 @@ public class DepartmentDAO extends DAO {
 
         openConnection();
 
-        myStmt = myConn.prepareStatement("select objects.NAME nam, objects.vers vers, comp_name.TEXT_VALUE cName, " +
-                "loc.TEXT_VALUE locc " +
-                "from objects join object_types on " +
-                "object_types.object_type_id = objects.object_type_id " +
-                "join attr on attr.object_type_id = object_types.object_type_id " +
-                "and attr.name='COMPANY' " +
-                "join params comp_name on comp_name.attr_id = attr.attr_id and " +
-                "comp_name.object_id = objects.object_id " +
-                "join attr loc_attr on " +
-                "loc_attr.object_type_id = Object_types.object_type_id and " +
-                "loc_attr.name='LOCATION'" +
-                "join Params loc on loc.attr_id=loc_attr.attr_id" +
-                " and loc.object_id=Objects.object_id" +
-                " WHERE object_types.OBJECT_TYPE_ID = 1511093783249 and objects.OBJECT_ID = ?");
+        myStmt = myConn.prepareStatement("SELECT o.NAME nam,o.vers vers, attr.name attr_name, attr.ATTR_ID attr_id, " +
+                " p.TEXT_VALUE txt, p.NUMBER_VALUE nmbr, p.DATE_VALUE dt\n" +
+                "FROM objects o\n" +
+                "INNER JOIN attr ON attr.object_type_id = o.OBJECT_TYPE_ID " +
+                "LEFT JOIN params p ON p.attr_id = ATTR.attr_id\n" +
+                "  AND p.object_id = o.object_id" +
+                " WHERE o.OBJECT_TYPE_ID = 1511093783249 AND o.OBJECT_ID = ?");
         myStmt.setLong(1, id);
 
         rs = myStmt.executeQuery();
 
 
-        while (rs.next()) {
-            department.setName(rs.getString("nam"));
-            department.setVersion(rs.getLong("vers"));
-            department.setCompanyName(rs.getString("cName"));
-            department.setLocation(rs.getString("locc"));
-        }
+//        while (rs.next()) {
+//            department.setName(rs.getString("nam"));
+//            department.setVersion(rs.getLong("vers"));
+//            department.setCompanyName(rs.getString("cName"));
+//            department.setLocation(rs.getString("locc"));
+//        }
 //        department.setId(id);
+
+        extractDepartmentFromResultSet(department, rs);
         getEmployees(id, department);
         close();
 
         return department;
+    }
+
+    private void extractDepartmentFromResultSet(Department department, ResultSet rs) throws SQLException {
+
+        long attr_id;
+
+
+        while (rs.next()) {
+            attr_id = rs.getLong("attr_id");
+
+            department.setName(rs.getString("nam"));
+            department.setVersion(rs.getLong("vers"));
+
+            if (attr_id == 1511096763500L) {
+                department.setCompanyName(rs.getString("txt"));
+            } else if (attr_id == 1511096765915L) {
+                department.setLocation(rs.getString("txt"));
+            }
+        }
+
     }
 
     private void getEmployees(long id, Department department) throws SQLException {

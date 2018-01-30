@@ -15,14 +15,15 @@ public class Main {
         Employee emp = null;
         Department department = null;
 
-        emp = (Employee) cache.get(1511094532520L, EntitiesTypes.EMPLOYEE);
-        System.out.println(emp);
+//        emp = (Employee) cache.get(1511094532520L, EntitiesTypes.EMPLOYEE);
+//        System.out.println(emp);
 //        cache.create(emp);
 //        System.out.println(emp.getId());
 //        cache.delete(emp);
 //        emp.setVersion(3);
 //        cache.update(emp);
         department = (Department) cache.get(1511096690819L, EntitiesTypes.DEPARTMENT);
+        System.out.println(department);
 
 
 //        EmployeeDAO dao = new EmployeeDAO();
