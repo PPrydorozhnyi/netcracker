@@ -135,7 +135,6 @@ public class Cache {
     }
 
     public void delete(Cacheable entity) {
-        writeLock.lock();
         readLock.lock();
 
         cacheMap.remove(entity.getId());
@@ -152,7 +151,6 @@ public class Cache {
         }
 
         readLock.unlock();
-        writeLock.unlock();
     }
 
     private void flush() {
