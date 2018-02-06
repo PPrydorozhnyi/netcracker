@@ -1,5 +1,6 @@
 package objects;
 
+import cache.Cacheable;
 import objects.types.EntitiesTypes;
 
 /**
@@ -7,7 +8,7 @@ import objects.types.EntitiesTypes;
  *
  * @author P.Pridorozhny
  */
-public class Sprint {
+public class Sprint implements Cacheable {
 
     private long id;
     private EntitiesTypes type;
@@ -27,6 +28,18 @@ public class Sprint {
 
     public long getId() {
         return id;
+    }
+
+    @Override
+    public Cacheable copyWithID() {
+        Sprint sprint = new Sprint(id);
+
+        sprint.setDifficulty(difficulty);
+        sprint.setVersion(version);
+        sprint.setName(name);
+        sprint.setTaskID(taskID);
+
+        return sprint;
     }
 
     public EntitiesTypes getType() {
@@ -70,5 +83,10 @@ public class Sprint {
         version = sprint.getVersion();
         name = sprint.getName();
         taskID = sprint.getTaskID();
+    }
+
+    @Override
+    public String toString() {
+        return name + " " + id + " " + difficulty + " " + taskID + " " + version;
     }
 }

@@ -2,8 +2,10 @@ package cache;
 
 import dao.DepartmentDAO;
 import dao.EmployeeDAO;
+import dao.SprintDAO;
 import objects.Department;
 import objects.Employee;
+import objects.Sprint;
 import objects.types.EntitiesTypes;
 
 import java.sql.SQLException;
@@ -26,9 +28,10 @@ public class Cache {
     private final Lock writeLock;
 
     private EmployeeDAO employeeDAO;
-    DepartmentDAO departmentDAO;
+    private DepartmentDAO departmentDAO;
+    private SprintDAO sprintDAO;
 
-    private final static int MAXSIZE = 5;
+    private final static int MAXSIZE = 0;
 
     private Cache() {
         cacheMap = new ConcurrentHashMap<>();
@@ -38,6 +41,7 @@ public class Cache {
 
         employeeDAO = new EmployeeDAO();
         departmentDAO = new DepartmentDAO();
+        sprintDAO = new SprintDAO();
     }
 
     public static Cache getCache() {
@@ -59,6 +63,9 @@ public class Cache {
             case EMPLOYEE:
                 entity = employeeDAO.createEmployee((Employee) object);
                 //System.out.println(object);
+                break;
+            case SPRINT:
+                entity = sprintDAO.createSprint((Sprint) object);
                 break;
             default:
                 System.out.println("Something going wrong in Cache create()");
@@ -93,6 +100,14 @@ public class Cache {
                 case EMPLOYEE:
                     try {
                         obj = employeeDAO.getByID(id);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case SPRINT:
+                    try {
+                        obj = sprintDAO.getByID(id);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -146,6 +161,9 @@ public class Cache {
             case EMPLOYEE:
                 employeeDAO.deleteEmployee((Employee) entity);
                 break;
+            case SPRINT:
+                sprintDAO.deleteSprint((Sprint) entity);
+                break;
             default:
                 System.out.println("Something going wrong in Cache delete()");
         }
@@ -162,6 +180,10 @@ public class Cache {
                         break;
                     case DEPARTMENT:
                         departmentDAO.updateDepartment((Department) pair.getValue());
+                        break;
+                    case SPRINT:
+                        sprintDAO.updateSprint((Sprint) pair.getValue());
+                        System.out.println("sprint dao");
                         break;
                     default:
                         System.out.println("Something going wrong in Cache flush()");

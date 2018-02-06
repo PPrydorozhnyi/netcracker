@@ -435,8 +435,8 @@ public class EmployeeDAO extends DAO {
         }
 
         try {
-            myStmt = myConn.prepareStatement("DELETE FROM params/*(object_id, attr_id, text_value)\n*/" +
-                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095081213");
+            myStmt = myConn.prepareStatement("DELETE FROM params " +
+                    "WHERE OBJECT_ID = ?");
             myStmt.setLong(1, id);
 
             myStmt.execute();
@@ -444,55 +444,55 @@ public class EmployeeDAO extends DAO {
             e.printStackTrace();
         }
 
-        try {
-            myStmt = myConn.prepareStatement("DELETE FROM params/*(object_id, attr_id, text_value)\n*/" +
-                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095084373");
-            myStmt.setLong(1, id);
-
-            myStmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            myStmt = myConn.prepareStatement("DELETE FROM params/*(object_id, attr_id, text_value)\n*/" +
-                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095087262");
-            myStmt.setLong(1, id);
-
-            myStmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            myStmt = myConn.prepareStatement("DELETE FROM params/*(object_id, attr_id, text_value)\n*/" +
-                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095090681");
-            myStmt.setLong(1, id);
-
-            myStmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            myStmt = myConn.prepareStatement("DELETE FROM params/*(object_id, attr_id, text_value)\n*/" +
-                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095093511");
-            myStmt.setLong(1, id);
-
-            myStmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            myStmt = myConn.prepareStatement("DELETE FROM params /*(object_id, attr_id, text_value)\n*/" +
-                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095096402");
-            myStmt.setLong(1, id);
-
-            myStmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            myStmt = myConn.prepareStatement("DELETE FROM params/*(object_id, attr_id, text_value)\n*/" +
+//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095084373");
+//            myStmt.setLong(1, id);
+//
+//            myStmt.execute();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            myStmt = myConn.prepareStatement("DELETE FROM params/*(object_id, attr_id, text_value)\n*/" +
+//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095087262");
+//            myStmt.setLong(1, id);
+//
+//            myStmt.execute();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            myStmt = myConn.prepareStatement("DELETE FROM params/*(object_id, attr_id, text_value)\n*/" +
+//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095090681");
+//            myStmt.setLong(1, id);
+//
+//            myStmt.execute();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            myStmt = myConn.prepareStatement("DELETE FROM params/*(object_id, attr_id, text_value)\n*/" +
+//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095093511");
+//            myStmt.setLong(1, id);
+//
+//            myStmt.execute();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            myStmt = myConn.prepareStatement("DELETE FROM params /*(object_id, attr_id, text_value)\n*/" +
+//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095096402");
+//            myStmt.setLong(1, id);
+//
+//            myStmt.execute();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
         close();
 

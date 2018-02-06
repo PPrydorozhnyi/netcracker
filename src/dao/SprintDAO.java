@@ -12,12 +12,11 @@ import java.util.Random;
  *
  * @author P.Pridorozhny
  */
-public class SpintDao extends DAO {
+public class SprintDAO extends DAO {
 
     public Sprint getByID(long id) throws SQLException {
         Sprint sprint;
 
-        sprint = new Sprint(id);
         ResultSet rs;
         PreparedStatement myStmt;
 
@@ -34,6 +33,12 @@ public class SpintDao extends DAO {
 
         rs = myStmt.executeQuery();
 
+        if (!rs.next()) {
+            close();
+            return null;
+        }
+
+        sprint = new Sprint(id);
         extractSprintFromResultSet(sprint, rs);
 
         close();
@@ -42,6 +47,8 @@ public class SpintDao extends DAO {
     }
 
     private void extractSprintFromResultSet(Sprint sprint, ResultSet rs) throws SQLException {
+
+        System.out.println(rs.next());
 
             long attr_id;
 
@@ -59,7 +66,7 @@ public class SpintDao extends DAO {
 
     }
 
-    private Sprint createSprint(Sprint spr) {
+    public Sprint createSprint(Sprint spr) {
 
         Sprint sprint;
         PreparedStatement myStmt;
@@ -96,7 +103,7 @@ public class SpintDao extends DAO {
 
         try {
             myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, NUMBER_VALUE)\n" +
-                    "VALUES(?, 1511095081213, ?)");
+                    "VALUES(?, 1517315005932, ?)");
             myStmt.setLong(1, id);
             myStmt.setLong(2, spr.getDifficulty());
 
@@ -109,7 +116,69 @@ public class SpintDao extends DAO {
     }
 
     public void updateSprint(Sprint sprint) {
+        PreparedStatement myStmt;
+        long id = sprint.getId();
 
+        openConnection();
+
+
+        try {
+            myStmt = myConn.prepareStatement("UPDATE objects " +
+                    "SET  NAME = ?, parent_id = ?, vers = ?" +
+                    " WHERE OBJECT_ID = ?");
+            myStmt.setString(1, sprint.getName());
+            myStmt.setLong(2, sprint.getTaskID());
+            myStmt.setLong(3, sprint.getVersion());
+            myStmt.setLong(4, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("UPDATE params" +
+                    " SET NUMBER_VALUE = ?" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1517315005932");
+            myStmt.setInt(1, sprint.getDifficulty() );
+            myStmt.setLong(2, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        close();
+
+    }
+
+    public void deleteSprint(Sprint sprint) {
+        PreparedStatement myStmt;
+        long id = sprint.getId();
+
+        openConnection();
+
+        try {
+            myStmt = myConn.prepareStatement("DELETE FROM objects " +
+                    " WHERE OBJECT_ID = ?");
+            myStmt.setLong(1, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("DELETE FROM params " +
+                    "WHERE OBJECT_ID = ?");
+            myStmt.setLong(1, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        close();
     }
 
 }
