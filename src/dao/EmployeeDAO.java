@@ -100,7 +100,7 @@ public class EmployeeDAO extends DAO {
 
         long attr_id;
 
-
+// TODO: extract manager and task
         while (rs.next()) {
             attr_id = rs.getLong("attr_id");
 
