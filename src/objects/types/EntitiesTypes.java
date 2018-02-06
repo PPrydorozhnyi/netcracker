@@ -8,5 +8,6 @@ package objects.types;
 public enum EntitiesTypes {
     EMPLOYEE,
     DEPARTMENT,
-    SPRINT
+    SPRINT,
+    TASK
 }
