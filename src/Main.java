@@ -1,8 +1,5 @@
 import cache.Cache;
-import objects.Department;
-import objects.Employee;
-import objects.Sprint;
-import objects.Task;
+import objects.*;
 import objects.types.EntitiesTypes;
 
 /**
@@ -18,6 +15,7 @@ public class Main {
         Department department = null;
         Sprint sprint = null;
         Task task = null;
+        Project project = null;
 
 //        emp = (Employee) cache.get(1511094532520L, EntitiesTypes.EMPLOYEE);
 //        System.out.println(emp);
@@ -36,7 +34,7 @@ public class Main {
 //        cache.update(sprint);
 //        cache.delete(sprint);
 
-        task = (Task) cache.get(1517950499737L, EntitiesTypes.TASK);
+//        task = (Task) cache.get(1517950499737L, EntitiesTypes.TASK);
 
 //        cache.create(task);
 //        task.setName("nn");
@@ -44,9 +42,23 @@ public class Main {
 //
 //        cache.update(task);
 
-        cache.delete(task);
+//        cache.delete(task);
 
-        System.out.println(task);
+
+        project = (Project) cache.get(1518107072648L, EntitiesTypes.PROJECT);
+
+//        cache.create(project);
+//        project.setName("das");
+//        project.setVersion(43);
+//        project.setManagerID(1518107072648L);
+//        project.setStart(new GregorianCalendar());
+//        project.setEnd(new GregorianCalendar());
+//
+//        cache.update(project);
+
+        cache.delete(project);
+
+        System.out.println(project);
 
 
 //        EmployeeDAO dao = new EmployeeDAO();

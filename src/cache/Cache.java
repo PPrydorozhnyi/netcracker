@@ -1,13 +1,7 @@
 package cache;
 
-import dao.DepartmentDAO;
-import dao.EmployeeDAO;
-import dao.SprintDAO;
-import dao.TaskDAO;
-import objects.Department;
-import objects.Employee;
-import objects.Sprint;
-import objects.Task;
+import dao.*;
+import objects.*;
 import objects.types.EntitiesTypes;
 
 import java.sql.SQLException;
@@ -33,6 +27,7 @@ public class Cache {
     private DepartmentDAO departmentDAO;
     private SprintDAO sprintDAO;
     private TaskDAO taskDAO;
+    private ProjectDAO projectDAO;
 
     private final static int MAXSIZE = 0;
 
@@ -46,6 +41,7 @@ public class Cache {
         departmentDAO = new DepartmentDAO();
         sprintDAO = new SprintDAO();
         taskDAO = new TaskDAO();
+        projectDAO = new ProjectDAO();
     }
 
     public static Cache getCache() {
@@ -73,6 +69,9 @@ public class Cache {
                 break;
             case TASK:
                 entity = taskDAO.createTask((Task) object);
+                break;
+            case PROJECT:
+                entity = projectDAO.createProject((Project) object);
                 break;
             default:
                 System.out.println("Something going wrong in Cache create()");
@@ -122,6 +121,13 @@ public class Cache {
                 case TASK:
                     try {
                         obj = taskDAO.getByID(id);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case PROJECT:
+                    try {
+                        obj = projectDAO.getByID(id);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -181,6 +187,9 @@ public class Cache {
             case TASK:
                 taskDAO.deleteTask((Task) entity);
                 break;
+            case PROJECT:
+                projectDAO.deleteProject((Project) entity);
+                break;
             default:
                 System.out.println("Something going wrong in Cache delete()");
         }
@@ -203,6 +212,9 @@ public class Cache {
                         break;
                     case TASK:
                         taskDAO.updateTask((Task) pair.getValue());
+                        break;
+                    case PROJECT:
+                        projectDAO.updateProject((Project) pair.getValue());
                         break;
                     default:
                         System.out.println("Something going wrong in Cache flush()");

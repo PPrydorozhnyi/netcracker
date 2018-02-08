@@ -9,5 +9,6 @@ public enum EntitiesTypes {
     EMPLOYEE,
     DEPARTMENT,
     SPRINT,
-    TASK
+    TASK,
+    PROJECT
 }

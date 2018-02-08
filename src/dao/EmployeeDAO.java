@@ -139,6 +139,7 @@ public class EmployeeDAO extends DAO {
         return department;
     }
 
+    @Deprecated
     public ArrayList<Employee> getByLastName(String lastName) throws SQLException {
 
         ArrayList<Employee> employees = new ArrayList<>();
