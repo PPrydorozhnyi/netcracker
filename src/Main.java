@@ -59,8 +59,9 @@ public class Main {
 //
 //        cache.delete(project);
 
-                manager = (Manager) cache.get(1518111982065L, EntitiesTypes.MANAGER);
+//                manager = (Manager) cache.get(1518111982065L, EntitiesTypes.MANAGER);
 
+        department = (Department) cache.get(1511096664981L, EntitiesTypes.DEPARTMENT);
 //        cache.create(manager);
 //        manager.setFirstName("das");
 //        manager.setLastName("sdas");
@@ -72,9 +73,9 @@ public class Main {
 //
 //        cache.update(manager);
 
-        cache.delete(manager);
+//        cache.delete(manager);
 
-        System.out.println(manager);
+        System.out.println(department);
 
 
 //        EmployeeDAO dao = new EmployeeDAO();

@@ -66,7 +66,7 @@ public class EmployeeDAO extends DAO {
 //                "WHERE object_types.OBJECT_TYPE_ID = 1511093759755 and objects.OBJECT_ID = ?");
 //        myStmt.setLong(1, id);
 
-        myStmt = myConn.prepareStatement("SELECT o.NAME nam,o.vers vers, attr.name attr_name, attr.ATTR_ID attr_id, " +
+        myStmt = myConn.prepareStatement("SELECT o.NAME nam,o.vers vers, o.PARENT_ID par, attr.name attr_name, attr.ATTR_ID attr_id, " +
                 " p.TEXT_VALUE txt, p.NUMBER_VALUE nmbr, p.DATE_VALUE dt\n" +
                 "FROM objects o\n" +
                 "INNER JOIN attr ON attr.object_type_id = o.OBJECT_TYPE_ID " +
@@ -90,7 +90,7 @@ public class EmployeeDAO extends DAO {
 
         extractEmployeeFromResultSet(employee, rs);
 
-        employee.setDepartment(getDept(employee.getDeptNumber()));
+        //employee.setDepartment(getDept(employee.getDeptNumber()));
         close();
 
         return employee;
@@ -106,6 +106,8 @@ public class EmployeeDAO extends DAO {
 
             employee.setLastName(rs.getString("nam"));
             employee.setVersion(rs.getLong("vers"));
+            employee.setDeptNumber(rs.getLong("par"));
+
 
             if (attr_id == 1511095081213L) {
                 employee.setFirstName(rs.getString("txt"));
@@ -117,8 +119,10 @@ public class EmployeeDAO extends DAO {
                 employee.setSalary(rs.getInt("nmbr"));
             } else if (attr_id == 1511095093511L) {
                 employee.setCommission(rs.getInt("nmbr"));
-            } else if (attr_id == 1511095096402L) {
-                employee.setDeptNumber(rs.getLong("nmbr"));
+            } else if (attr_id == 1517315456216L) {
+                employee.setManagerID(rs.getLong("nmbr"));
+            } else if (attr_id == 1517315539290L) {
+                employee.setTaskID(rs.getLong("nmbr"));
             }
         }
 
@@ -203,7 +207,7 @@ public class EmployeeDAO extends DAO {
             employee.setSalary(rs.getInt("sall"));
             employee.setCommission(rs.getInt("commm"));
             employee.setDeptNumber(rs.getLong("deptnoo"));
-            employee.setDepartment(getDept(employee.getDeptNumber()));
+//            employee.setDepartment(getDept(employee.getDeptNumber()));
             employees.add(employee);
 
         }
@@ -314,6 +318,28 @@ public class EmployeeDAO extends DAO {
             e.printStackTrace();
         }
 
+        try {
+            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, number_value)\n" +
+                    "VALUES(?, 1517315456216, ?)");
+            myStmt.setLong(1, id);
+            myStmt.setLong(2, emp.getManagerID() );
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, number_value)\n" +
+                    "VALUES(?, 1517315539290, ?)");
+            myStmt.setLong(1, id);
+            myStmt.setLong(2, emp.getTaskID() );
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         close();
 
         return employee;
@@ -405,6 +431,30 @@ public class EmployeeDAO extends DAO {
                     " SET /*(?, 1511095081213, ?)*/ NUMBER_VALUE = ?" +
                     "WHERE OBJECT_ID = ? AND ATTR_ID = 1511095096402");
             myStmt.setLong(1, empS.getDeptNumber() );
+            myStmt.setLong(2, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("UPDATE params" +
+                    " SET NUMBER_VALUE = ?" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1517315456216");
+            myStmt.setLong(1, empS.getManagerID() );
+            myStmt.setLong(2, id);
+
+            myStmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            myStmt = myConn.prepareStatement("UPDATE params" +
+                    " SET NUMBER_VALUE = ?" +
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1517315539290");
+            myStmt.setLong(1, empS.getTaskID() );
             myStmt.setLong(2, id);
 
             myStmt.execute();

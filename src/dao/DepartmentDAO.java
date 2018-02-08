@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -52,7 +53,7 @@ public class DepartmentDAO extends DAO {
 //        department.setId(id);
 
         extractDepartmentFromResultSet(department, rs);
-        getEmployees(id, department);
+        department.setEmployees(getEmployees(id));
         close();
 
         return department;
@@ -78,112 +79,146 @@ public class DepartmentDAO extends DAO {
 
     }
 
-    private void getEmployees(long id, Department department) throws SQLException {
+    private ArrayList<Employee> getEmployees(long id) throws SQLException {
 
-        Employee employee;
+        ArrayList<Employee> employees = new ArrayList<>();
+
+        List<Long> employeeIDs = new ArrayList<>();
+        EmployeeDAO employeeDAO = new EmployeeDAO();
+
         ResultSet rs;
         PreparedStatement myStmt;
 
-        myStmt = myConn.prepareStatement("select objects.OBJECT_ID idd,  objects.vers vers, objects.NAME nam, fi_name.TEXT_VALUE fname, " +
-                "job.TEXT_VALUE jobb, hiredate.DATE_VALUE hiredatee, sal.NUMBER_VALUE sall, " +
-                "comm.NUMBER_VALUE commm, deptno.NUMBER_VALUE deptnoo " +
-                "from objects join object_types on " +
-                "object_types.object_type_id = objects.object_type_id " +
-                "join attr on attr.object_type_id = object_types.object_type_id " +
-                "and attr.name='ENAME' " +
-                "join params fi_name on fi_name.attr_id = attr.attr_id and " +
-                "fi_name.object_id = objects.object_id " +
-                "join attr job_attr on " +
-                "job_attr.object_type_id = Object_types.object_type_id and " +
-                "job_attr.name='JOB'\n" +
-                "join Params job on job.attr_id=job_attr.attr_id" +
-                " and job.object_id=Objects.object_id" +
-                " join attr hiredate_attr on " +
-                "hiredate_attr.object_type_id=object_types.object_type_id and " +
-                "hiredate_attr.name='HIREDATE'" +
-                "join params hiredate on hiredate.attr_id=hiredate_attr.attr_id and " +
-                "hiredate.object_id=objects.object_id" +
-                " join attr sal_attr on " +
-                "sal_attr.object_type_id=object_types.object_type_id and " +
-                "sal_attr.name='SAL'" +
-                "join Params sal on sal.attr_id=sal_attr.attr_id and " +
-                "sal.object_id=objects.object_id" +
-                " join attr comm_attr on " +
-                "comm_attr.object_type_id=Object_types.object_type_id and " +
-                "comm_attr.name='COMM'" +
-                "join Params comm on comm.attr_id=comm_attr.attr_id and " +
-                "comm.object_id=Objects.object_id" +
-                " join attr deptno_attr on " +
-                "deptno_attr.object_type_id=object_types.object_type_id and " +
-                "deptno_attr.name='DEPTNO'" +
-                "join Params deptno on deptno.attr_id=deptno_attr.attr_id and " +
-                "deptno.object_id=objects.object_id " +
-                "WHERE object_types.OBJECT_TYPE_ID = 1511093759755 and deptno.NUMBER_VALUE = ?");
+        openConnection();
+
+        myStmt = myConn.prepareStatement("SELECT o.OBJECT_ID idd FROM OBJECTS o" +
+                " WHERE o.OBJECT_TYPE_ID = 1511093759755 AND o.PARENT_ID = ?");
         myStmt.setLong(1, id);
 
         rs = myStmt.executeQuery();
 
-
         while (rs.next()) {
-            employee = new Employee(rs.getLong("idd"));
-
-            employee.setLastName(rs.getString("nam"));
-            employee.setVersion(rs.getLong("vers"));
-            employee.setFirstName(rs.getString("fname"));
-            employee.setJob(rs.getString("jobb"));
-            employee.setHiredate(rs.getDate("hiredatee"));
-            employee.setSalary(rs.getInt("sall"));
-            employee.setCommission(rs.getInt("commm"));
-            employee.setDeptNumber(rs.getLong("deptnoo"));
-            employee.setDepartment(department);
-
-            department.getEmployees().add(employee);
-        }
-    }
-
-    public ArrayList<Department> getByDeptName(String deptName) throws SQLException {
-
-        ArrayList<Department> departments = new ArrayList<>();
-        Department department;
-        ResultSet rs;
-        PreparedStatement myStmt ;
-
-        openConnection();
-
-        myStmt = myConn.prepareStatement("select objects.OBJECT_ID idd, objects.vers vers, objects.NAME nam, comp_name.TEXT_VALUE cName, " +
-                "loc.TEXT_VALUE locc " +
-                "from objects join object_types on " +
-                "object_types.object_type_id = objects.object_type_id " +
-                "join attr on attr.object_type_id = object_types.object_type_id " +
-                "and attr.name='COMPANY' " +
-                "join params comp_name on comp_name.attr_id = attr.attr_id and " +
-                "comp_name.object_id = objects.object_id " +
-                "join attr loc_attr on " +
-                "loc_attr.object_type_id = Object_types.object_type_id and " +
-                "loc_attr.name='LOCATION'" +
-                "join Params loc on loc.attr_id=loc_attr.attr_id" +
-                " and loc.object_id=Objects.object_id " +
-                "WHERE object_types.OBJECT_TYPE_ID = 1511093783249 and objects.NAME = ?");
-        myStmt.setString(1, deptName);
-
-        rs = myStmt.executeQuery();
-
-
-        while (rs.next()) {
-            department = new Department(rs.getLong("idd"));
-//            department.setId();
-            department.setName(rs.getString("nam"));
-            department.setVersion(rs.getLong("vers"));
-            department.setCompanyName(rs.getString("cName"));
-            department.setLocation(rs.getString("locc"));
-            getEmployees(department.getId(), department);
-            departments.add(department);
+            employeeIDs.add(rs.getLong("idd"));
         }
 
         close();
 
-        return departments;
+        for (Long sprintID : employeeIDs) {
+            employees.add(employeeDAO.getByID(sprintID));
+        }
+
+        System.out.println(employees);
+
+        return employees;
     }
+
+//    private void getEmployees(long id, Department department) throws SQLException {
+//
+//        Employee employee;
+//        ResultSet rs;
+//        PreparedStatement myStmt;
+//
+//        myStmt = myConn.prepareStatement("select objects.OBJECT_ID idd,  objects.vers vers, objects.NAME nam, fi_name.TEXT_VALUE fname, " +
+//                "job.TEXT_VALUE jobb, hiredate.DATE_VALUE hiredatee, sal.NUMBER_VALUE sall, " +
+//                "comm.NUMBER_VALUE commm, deptno.NUMBER_VALUE deptnoo " +
+//                "from objects join object_types on " +
+//                "object_types.object_type_id = objects.object_type_id " +
+//                "join attr on attr.object_type_id = object_types.object_type_id " +
+//                "and attr.name='ENAME' " +
+//                "join params fi_name on fi_name.attr_id = attr.attr_id and " +
+//                "fi_name.object_id = objects.object_id " +
+//                "join attr job_attr on " +
+//                "job_attr.object_type_id = Object_types.object_type_id and " +
+//                "job_attr.name='JOB'\n" +
+//                "join Params job on job.attr_id=job_attr.attr_id" +
+//                " and job.object_id=Objects.object_id" +
+//                " join attr hiredate_attr on " +
+//                "hiredate_attr.object_type_id=object_types.object_type_id and " +
+//                "hiredate_attr.name='HIREDATE'" +
+//                "join params hiredate on hiredate.attr_id=hiredate_attr.attr_id and " +
+//                "hiredate.object_id=objects.object_id" +
+//                " join attr sal_attr on " +
+//                "sal_attr.object_type_id=object_types.object_type_id and " +
+//                "sal_attr.name='SAL'" +
+//                "join Params sal on sal.attr_id=sal_attr.attr_id and " +
+//                "sal.object_id=objects.object_id" +
+//                " join attr comm_attr on " +
+//                "comm_attr.object_type_id=Object_types.object_type_id and " +
+//                "comm_attr.name='COMM'" +
+//                "join Params comm on comm.attr_id=comm_attr.attr_id and " +
+//                "comm.object_id=Objects.object_id" +
+//                " join attr deptno_attr on " +
+//                "deptno_attr.object_type_id=object_types.object_type_id and " +
+//                "deptno_attr.name='DEPTNO'" +
+//                "join Params deptno on deptno.attr_id=deptno_attr.attr_id and " +
+//                "deptno.object_id=objects.object_id " +
+//                "WHERE object_types.OBJECT_TYPE_ID = 1511093759755 and deptno.NUMBER_VALUE = ?");
+//        myStmt.setLong(1, id);
+//
+//        rs = myStmt.executeQuery();
+//
+//
+//        while (rs.next()) {
+//            employee = new Employee(rs.getLong("idd"));
+//
+//            employee.setLastName(rs.getString("nam"));
+//            employee.setVersion(rs.getLong("vers"));
+//            employee.setFirstName(rs.getString("fname"));
+//            employee.setJob(rs.getString("jobb"));
+//            employee.setHiredate(rs.getDate("hiredatee"));
+//            employee.setSalary(rs.getInt("sall"));
+//            employee.setCommission(rs.getInt("commm"));
+//            employee.setDeptNumber(rs.getLong("deptnoo"));
+//            employee.setDepartment(department);
+//
+//            department.getEmployees().add(employee);
+//        }
+//    }
+
+//    @Deprecated
+//    public ArrayList<Department> getByDeptName(String deptName) throws SQLException {
+//
+//        ArrayList<Department> departments = new ArrayList<>();
+//        Department department;
+//        ResultSet rs;
+//        PreparedStatement myStmt ;
+//
+//        openConnection();
+//
+//        myStmt = myConn.prepareStatement("select objects.OBJECT_ID idd, objects.vers vers, objects.NAME nam, comp_name.TEXT_VALUE cName, " +
+//                "loc.TEXT_VALUE locc " +
+//                "from objects join object_types on " +
+//                "object_types.object_type_id = objects.object_type_id " +
+//                "join attr on attr.object_type_id = object_types.object_type_id " +
+//                "and attr.name='COMPANY' " +
+//                "join params comp_name on comp_name.attr_id = attr.attr_id and " +
+//                "comp_name.object_id = objects.object_id " +
+//                "join attr loc_attr on " +
+//                "loc_attr.object_type_id = Object_types.object_type_id and " +
+//                "loc_attr.name='LOCATION'" +
+//                "join Params loc on loc.attr_id=loc_attr.attr_id" +
+//                " and loc.object_id=Objects.object_id " +
+//                "WHERE object_types.OBJECT_TYPE_ID = 1511093783249 and objects.NAME = ?");
+//        myStmt.setString(1, deptName);
+//
+//        rs = myStmt.executeQuery();
+//
+//
+//        while (rs.next()) {
+//            department = new Department(rs.getLong("idd"));
+////            department.setId();
+//            department.setName(rs.getString("nam"));
+//            department.setVersion(rs.getLong("vers"));
+//            department.setCompanyName(rs.getString("cName"));
+//            department.setLocation(rs.getString("locc"));
+//            getEmployees(department.getId(), department);
+//            departments.add(department);
+//        }
+//
+//        close();
+//
+//        return departments;
+//    }
 
     public Department createDepartment(Department dept) {
 

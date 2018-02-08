@@ -83,7 +83,7 @@ public class Department implements Cacheable {
 
     @Override
     public String toString() {
-        return name + " " + companyName + " " + location + " " + version;
+        return name + " " + companyName + " " + location + " " + version + " " + employees;
     }
 
     public void copy(Department dept) {

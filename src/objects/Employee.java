@@ -20,7 +20,9 @@ public class Employee implements Cacheable {
     private int salary;
     private int commission;
     private long deptNumber;
-    private Department department;
+    private long managerID;
+    private long taskID;
+//    private Department department;
     private long version;
     private EntitiesTypes type;
 
@@ -104,13 +106,13 @@ public class Employee implements Cacheable {
         this.deptNumber = deptNumber;
     }
 
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
+//    public Department getDepartment() {
+//        return department;
+//    }
+//
+//    public void setDepartment(Department department) {
+//        this.department = department;
+//    }
 
     public long getVersion() {
         return version;
@@ -118,6 +120,22 @@ public class Employee implements Cacheable {
 
     public void setVersion(long version) {
         this.version = version;
+    }
+
+    public long getManagerID() {
+        return managerID;
+    }
+
+    public void setManagerID(long managerID) {
+        this.managerID = managerID;
+    }
+
+    public long getTaskID() {
+        return taskID;
+    }
+
+    public void setTaskID(long taskID) {
+        this.taskID = taskID;
     }
 
     @Override
@@ -130,11 +148,11 @@ public class Employee implements Cacheable {
     public String toString() {
 
         return firstName + "\n" + lastName + "\n" + job + "\n" + hiredate.getTime() + "\n" + salary + "\n" +
-                commission + "\n" + deptNumber + "\n" + department + "\n" + version;
+                commission + "\n" + deptNumber/* + "\n" + department*/ + "\n" + version + "\n" + taskID + "\n" + managerID;
     }
 
     public void copy(Employee employee) {
-        department = employee.getDepartment();
+//        department = employee.getDepartment();
         deptNumber = employee.getDeptNumber();
         commission = employee.getCommission();
         salary = employee.getSalary();
@@ -149,7 +167,7 @@ public class Employee implements Cacheable {
     public Cacheable copyWithID() {
         Employee employee = new Employee(id);
         employee.setVersion(version);
-        employee.setDepartment(department);
+//        employee.setDepartment(department);
         employee.setSalary(salary);
         employee.setDeptNumber(deptNumber);
         employee.setCommission(commission);
