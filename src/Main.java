@@ -16,6 +16,7 @@ public class Main {
         Sprint sprint = null;
         Task task = null;
         Project project = null;
+        Manager manager = null;
 
 //        emp = (Employee) cache.get(1511094532520L, EntitiesTypes.EMPLOYEE);
 //        System.out.println(emp);
@@ -45,20 +46,35 @@ public class Main {
 //        cache.delete(task);
 
 
-        project = (Project) cache.get(1518107072648L, EntitiesTypes.PROJECT);
+//        project = (Project) cache.get(1518107072648L, EntitiesTypes.PROJECT);
+//
+////        cache.create(project);
+////        project.setName("das");
+////        project.setVersion(43);
+////        project.setManagerID(1518107072648L);
+////        project.setStart(new GregorianCalendar());
+////        project.setEnd(new GregorianCalendar());
+////
+////        cache.update(project);
+//
+//        cache.delete(project);
 
-//        cache.create(project);
-//        project.setName("das");
-//        project.setVersion(43);
-//        project.setManagerID(1518107072648L);
+                manager = (Manager) cache.get(1518111982065L, EntitiesTypes.MANAGER);
+
+//        cache.create(manager);
+//        manager.setFirstName("das");
+//        manager.setLastName("sdas");
+//        manager.setVersion(43);
+//        manager.setDeptID(1518112036684L);
+//        manager.setSalary(423);
 //        project.setStart(new GregorianCalendar());
 //        project.setEnd(new GregorianCalendar());
 //
-//        cache.update(project);
+//        cache.update(manager);
 
-        cache.delete(project);
+        cache.delete(manager);
 
-        System.out.println(project);
+        System.out.println(manager);
 
 
 //        EmployeeDAO dao = new EmployeeDAO();

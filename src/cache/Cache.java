@@ -28,6 +28,7 @@ public class Cache {
     private SprintDAO sprintDAO;
     private TaskDAO taskDAO;
     private ProjectDAO projectDAO;
+    private ManagerDAO managerDAO;
 
     private final static int MAXSIZE = 0;
 
@@ -42,6 +43,7 @@ public class Cache {
         sprintDAO = new SprintDAO();
         taskDAO = new TaskDAO();
         projectDAO = new ProjectDAO();
+        managerDAO = new ManagerDAO();
     }
 
     public static Cache getCache() {
@@ -72,6 +74,9 @@ public class Cache {
                 break;
             case PROJECT:
                 entity = projectDAO.createProject((Project) object);
+                break;
+            case MANAGER:
+                entity = managerDAO.createManager((Manager) object);
                 break;
             default:
                 System.out.println("Something going wrong in Cache create()");
@@ -128,6 +133,13 @@ public class Cache {
                 case PROJECT:
                     try {
                         obj = projectDAO.getByID(id);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case MANAGER:
+                    try {
+                        obj = managerDAO.getByID(id);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -190,6 +202,9 @@ public class Cache {
             case PROJECT:
                 projectDAO.deleteProject((Project) entity);
                 break;
+            case MANAGER:
+                managerDAO.deleteManager((Manager) entity);
+                break;
             default:
                 System.out.println("Something going wrong in Cache delete()");
         }
@@ -215,6 +230,9 @@ public class Cache {
                         break;
                     case PROJECT:
                         projectDAO.updateProject((Project) pair.getValue());
+                        break;
+                    case MANAGER:
+                        managerDAO.updateManager((Manager) pair.getValue());
                         break;
                     default:
                         System.out.println("Something going wrong in Cache flush()");
