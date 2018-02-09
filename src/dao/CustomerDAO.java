@@ -1,20 +1,20 @@
 package dao;
 
-import objects.Manager;
+import objects.Customer;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Created by drake on 08/02/18.
+ * Created by drake on 09/02/18.
  *
  * @author P.Pridorozhny
  */
-public class ManagerDAO extends DAO {
+public class CustomerDAO extends DAO {
 
-    public Manager getByID(long id) throws SQLException {
-        Manager manager;
+    public Customer getByID(long id) throws SQLException {
+        Customer customer;
 
         ResultSet rs;
         PreparedStatement myStmt;
@@ -27,7 +27,7 @@ public class ManagerDAO extends DAO {
                 "INNER JOIN attr ON attr.object_type_id = o.OBJECT_TYPE_ID " +
                 "LEFT JOIN params p ON p.attr_id = ATTR.attr_id\n" +
                 "  AND p.object_id = o.object_id" +
-                " WHERE o.OBJECT_TYPE_ID = 1517314340491 AND o.OBJECT_ID = ?");
+                " WHERE o.OBJECT_TYPE_ID = 1517314336024 AND o.OBJECT_ID = ?");
         myStmt.setLong(1, id);
 
         rs = myStmt.executeQuery();
@@ -39,65 +39,35 @@ public class ManagerDAO extends DAO {
 //        }
 
 
-        manager = new Manager(id);
-        //System.out.println(1);
-        extractTaskFromResultSet(manager, rs);
+        customer = new Customer(id);
+        extractTaskFromResultSet(customer, rs);
 
         close();
 
-        manager.setProjectID(getProjectID(id));
-
-        return manager;
+        return customer;
     }
 
-    private long getProjectID(long id) throws SQLException {
-
-        long projectID = 0;
-
-        ResultSet rs;
-        PreparedStatement myStmt;
-
-        openConnection();
-
-        myStmt = myConn.prepareStatement("SELECT o.OBJECT_ID idd FROM OBJECTS o" +
-                " WHERE o.OBJECT_TYPE_ID = 1517314348884 AND o.PARENT_ID = ?");
-        myStmt.setLong(1, id);
-
-        rs = myStmt.executeQuery();
-
-        while (rs.next()) {
-            projectID = rs.getLong("idd");
-        }
-
-        close();
-
-        return projectID;
-
-    }
-
-    private void extractTaskFromResultSet(Manager manager, ResultSet rs) throws SQLException {
+    private void extractTaskFromResultSet(Customer customer, ResultSet rs) throws SQLException {
 
         long attr_id;
 
         while (rs.next()) {
             attr_id = rs.getLong("attr_id");
 
-            manager.setVersion(rs.getLong("vers"));
-            manager.setLastName(rs.getString("nam"));
-            manager.setDeptID(rs.getLong("par"));
+            customer.setVersion(rs.getLong("vers"));
+            customer.setLastName(rs.getString("nam"));
+            customer.setProjectID(rs.getLong("par"));
 
-            if (attr_id == 1517315005913L) {
-                manager.setSalary(rs.getInt("nmbr"));
-            } else if (attr_id == 1517315005901L) {
-                manager.setFirstName(rs.getString("txt"));
+            if (attr_id == 1517315005886L) {
+                customer.setFirstName(rs.getString("txt"));
             }
         }
 
     }
 
-    public Manager createManager(Manager mgr) {
+    public Customer createCustomer(Customer cst) {
 
-        Manager manager;
+        Customer customer;
         PreparedStatement myStmt;
         ResultSet rs;
         long id = generateID();
@@ -113,28 +83,17 @@ public class ManagerDAO extends DAO {
 //            e.printStackTrace();
 //        }
 
-        manager = new Manager(id);
-        manager.copy(mgr);
+        customer = new Customer(id);
+        customer.copy(cst);
 
 
         try {
             myStmt = myConn.prepareStatement("INSERT INTO objects(object_id, OBJECT_TYPE_ID, name, parent_id, vers) " +
-                    "VALUES(?, 1517314340491, ?, ?, ?)");
+                    "VALUES(?, 1517314336024, ?, ?, ?)");
             myStmt.setLong(1, id);
-            myStmt.setString(2, mgr.getLastName());
-            myStmt.setLong(3, mgr.getDeptID());
-            myStmt.setLong(4, mgr.getVersion());
-
-            myStmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, NUMBER_VALUE)\n" +
-                    "VALUES(?, 1517315005913, ?)");
-            myStmt.setLong(1, id);
-            myStmt.setInt(2, mgr.getSalary());
+            myStmt.setString(2, cst.getLastName());
+            myStmt.setLong(3, cst.getProjectID());
+            myStmt.setLong(4, cst.getVersion());
 
             myStmt.execute();
         } catch (SQLException e) {
@@ -143,9 +102,9 @@ public class ManagerDAO extends DAO {
 
         try {
             myStmt = myConn.prepareStatement("INSERT INTO params(object_id, attr_id, TEXT_VALUE)\n" +
-                    "VALUES(?, 1517315005901, ?)");
+                    "VALUES(?, 1517315005886, ?)");
             myStmt.setLong(1, id);
-            myStmt.setString(2, mgr.getFirstName());
+            myStmt.setString(2, cst.getFirstName());
 
             myStmt.execute();
         } catch (SQLException e) {
@@ -154,12 +113,12 @@ public class ManagerDAO extends DAO {
 
         close();
 
-        return manager;
+        return customer;
     }
 
-    public void updateManager(Manager manager) {
+    public void updateCustomer(Customer customer) {
         PreparedStatement myStmt;
-        long id = manager.getId();
+        long id = customer.getId();
 
         openConnection();
 
@@ -168,9 +127,9 @@ public class ManagerDAO extends DAO {
             myStmt = myConn.prepareStatement("UPDATE objects " +
                     "SET  NAME = ?, parent_id = ?, vers = ?" +
                     " WHERE OBJECT_ID = ?");
-            myStmt.setString(1, manager.getLastName());
-            myStmt.setLong(2, manager.getDeptID());
-            myStmt.setLong(3, manager.getVersion());
+            myStmt.setString(1, customer.getLastName());
+            myStmt.setLong(2, customer.getProjectID());
+            myStmt.setLong(3, customer.getVersion());
             myStmt.setLong(4, id);
 
             myStmt.execute();
@@ -180,21 +139,9 @@ public class ManagerDAO extends DAO {
 
         try {
             myStmt = myConn.prepareStatement("UPDATE params" +
-                    " SET NUMBER_VALUE = ?" +
-                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1517315005913");
-            myStmt.setInt(1, manager.getSalary() );
-            myStmt.setLong(2, id);
-
-            myStmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            myStmt = myConn.prepareStatement("UPDATE params" +
                     " SET TEXT_VALUE = ?" +
-                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1517315005901");
-            myStmt.setString(1, manager.getFirstName() );
+                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1517315005886");
+            myStmt.setString(1, customer.getFirstName() );
             myStmt.setLong(2, id);
 
             myStmt.execute();
@@ -206,9 +153,9 @@ public class ManagerDAO extends DAO {
 
     }
 
-//    public void deleteManager(Manager manager) {
+//    public void deleteCustomer(Customer customer) {
 //        PreparedStatement myStmt;
-//        long id = manager.getId();
+//        long id = customer.getId();
 //
 //        openConnection();
 //
@@ -234,6 +181,5 @@ public class ManagerDAO extends DAO {
 //
 //        close();
 //    }
-
 
 }

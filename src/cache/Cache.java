@@ -29,6 +29,7 @@ public class Cache {
     private TaskDAO taskDAO;
     private ProjectDAO projectDAO;
     private ManagerDAO managerDAO;
+    private CustomerDAO customerDAO;
 
     private final static int MAXSIZE = 0;
 
@@ -44,6 +45,7 @@ public class Cache {
         taskDAO = new TaskDAO();
         projectDAO = new ProjectDAO();
         managerDAO = new ManagerDAO();
+        customerDAO = new CustomerDAO();
     }
 
     public static Cache getCache() {
@@ -77,6 +79,9 @@ public class Cache {
                 break;
             case MANAGER:
                 entity = managerDAO.createManager((Manager) object);
+                break;
+            case CUSTOMER:
+                entity = customerDAO.createCustomer((Customer) object);
                 break;
             default:
                 System.out.println("Something going wrong in Cache create()");
@@ -144,6 +149,13 @@ public class Cache {
                         e.printStackTrace();
                     }
                     break;
+                case CUSTOMER:
+                    try {
+                        obj = customerDAO.getByID(id);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 default:
                     System.out.println("Something going wrong in Cache get()");
             }
@@ -186,28 +198,30 @@ public class Cache {
 
         cacheMap.remove(entity.getId());
 
-        switch (entity.getType()) {
-            case DEPARTMENT:
-                departmentDAO.deleteDepartment((Department) entity);
-                break;
-            case EMPLOYEE:
-                employeeDAO.deleteEmployee((Employee) entity);
-                break;
-            case SPRINT:
-                sprintDAO.deleteSprint((Sprint) entity);
-                break;
-            case TASK:
-                taskDAO.deleteTask((Task) entity);
-                break;
-            case PROJECT:
-                projectDAO.deleteProject((Project) entity);
-                break;
-            case MANAGER:
-                managerDAO.deleteManager((Manager) entity);
-                break;
-            default:
-                System.out.println("Something going wrong in Cache delete()");
-        }
+//        switch (entity.getType()) {
+//            case DEPARTMENT:
+//                departmentDAO.deleteDepartment((Department) entity);
+//                break;
+//            case EMPLOYEE:
+//                employeeDAO.deleteEmployee((Employee) entity);
+//                break;
+//            case SPRINT:
+//                sprintDAO.deleteSprint((Sprint) entity);
+//                break;
+//            case TASK:
+//                taskDAO.deleteTask((Task) entity);
+//                break;
+//            case PROJECT:
+//                projectDAO.deleteProject((Project) entity);
+//                break;
+//            case MANAGER:
+//                managerDAO.deleteManager((Manager) entity);
+//                break;
+//            default:
+//                System.out.println("Something going wrong in Cache delete()");
+//        }
+
+        departmentDAO.deleteFromDB(entity);
 
         readLock.unlock();
     }
@@ -233,6 +247,9 @@ public class Cache {
                         break;
                     case MANAGER:
                         managerDAO.updateManager((Manager) pair.getValue());
+                        break;
+                    case CUSTOMER:
+                        customerDAO.updateCustomer((Customer) pair.getValue());
                         break;
                     default:
                         System.out.println("Something going wrong in Cache flush()");

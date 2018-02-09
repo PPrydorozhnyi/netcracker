@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by drake on 06/02/18.
@@ -108,18 +107,18 @@ public class TaskDAO extends DAO {
         Task task;
         PreparedStatement myStmt;
         ResultSet rs;
-        long id = new Random().nextLong();
+        long id = generateID();
 
         openConnection();
 
-        try {
-            rs = myConn.createStatement().executeQuery("SELECT ORA_HASH('objects', 9999) + CURRENT_TIME_MS idd FROM dual");
-            if (rs.next()) {
-                id = rs.getLong("idd");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            rs = myConn.createStatement().executeQuery("SELECT ORA_HASH('objects', 9999) + CURRENT_TIME_MS idd FROM dual");
+//            if (rs.next()) {
+//                id = rs.getLong("idd");
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
         task = new Task(id);
         task.copy(tsk);
@@ -148,6 +147,8 @@ public class TaskDAO extends DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        close();
 
         return task;
     }
@@ -189,32 +190,32 @@ public class TaskDAO extends DAO {
 
     }
 
-    public void deleteTask(Task task) {
-        PreparedStatement myStmt;
-        long id = task.getId();
-
-        openConnection();
-
-        try {
-            myStmt = myConn.prepareStatement("DELETE FROM objects " +
-                    " WHERE OBJECT_ID = ?");
-            myStmt.setLong(1, id);
-
-            myStmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            myStmt = myConn.prepareStatement("DELETE FROM params " +
-                    "WHERE OBJECT_ID = ?");
-            myStmt.setLong(1, id);
-
-            myStmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        close();
-    }
+//    public void deleteTask(Task task) {
+//        PreparedStatement myStmt;
+//        long id = task.getId();
+//
+//        openConnection();
+//
+//        try {
+//            myStmt = myConn.prepareStatement("DELETE FROM objects " +
+//                    " WHERE OBJECT_ID = ?");
+//            myStmt.setLong(1, id);
+//
+//            myStmt.execute();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            myStmt = myConn.prepareStatement("DELETE FROM params " +
+//                    "WHERE OBJECT_ID = ?");
+//            myStmt.setLong(1, id);
+//
+//            myStmt.execute();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        close();
+//    }
 }

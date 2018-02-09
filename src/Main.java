@@ -1,6 +1,5 @@
 import cache.Cache;
 import objects.*;
-import objects.types.EntitiesTypes;
 
 /**
  * @author P.Pridorozhny
@@ -17,6 +16,7 @@ public class Main {
         Task task = null;
         Project project = null;
         Manager manager = null;
+        Customer customer = null;
 
 //        emp = (Employee) cache.get(1511094532520L, EntitiesTypes.EMPLOYEE);
 //        System.out.println(emp);
@@ -61,7 +61,7 @@ public class Main {
 
 //                manager = (Manager) cache.get(1518111982065L, EntitiesTypes.MANAGER);
 
-        department = (Department) cache.get(1511096664981L, EntitiesTypes.DEPARTMENT);
+//        department = (Department) cache.get(1511096664981L, EntitiesTypes.DEPARTMENT);
 //        cache.create(manager);
 //        manager.setFirstName("das");
 //        manager.setLastName("sdas");
@@ -75,7 +75,12 @@ public class Main {
 
 //        cache.delete(manager);
 
-        System.out.println(department);
+//        customer = (Customer) cache.get(1517316012854L, EntitiesTypes.CUSTOMER);
+
+//        cache.create(customer);
+//        cache.delete(customer);
+//
+//        System.out.println(customer);
 
 
 //        EmployeeDAO dao = new EmployeeDAO();

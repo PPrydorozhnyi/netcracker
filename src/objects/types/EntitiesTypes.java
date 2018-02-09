@@ -11,5 +11,6 @@ public enum EntitiesTypes {
     SPRINT,
     TASK,
     PROJECT,
-    MANAGER
+    MANAGER,
+    CUSTOMER
 }

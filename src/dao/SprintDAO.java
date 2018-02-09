@@ -5,7 +5,6 @@ import objects.Sprint;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Random;
 
 /**
  * Created by drake on 06/02/18.
@@ -66,18 +65,18 @@ public class SprintDAO extends DAO {
         Sprint sprint;
         PreparedStatement myStmt;
         ResultSet rs;
-        long id = new Random().nextLong();
+        long id = generateID();
 
         openConnection();
 
-        try {
-            rs = myConn.createStatement().executeQuery("SELECT ORA_HASH('objects', 9999) + CURRENT_TIME_MS iddd FROM dual");
-            if (rs.next()) {
-                id = rs.getLong("iddd");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            rs = myConn.createStatement().executeQuery("SELECT ORA_HASH('objects', 9999) + CURRENT_TIME_MS iddd FROM dual");
+//            if (rs.next()) {
+//                id = rs.getLong("iddd");
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
         sprint = new Sprint(id);
         sprint.copy(spr);
@@ -106,6 +105,8 @@ public class SprintDAO extends DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        close();
 
         return sprint;
     }
@@ -147,33 +148,33 @@ public class SprintDAO extends DAO {
 
     }
 
-    public void deleteSprint(Sprint sprint) {
-        PreparedStatement myStmt;
-        long id = sprint.getId();
-
-        openConnection();
-
-        try {
-            myStmt = myConn.prepareStatement("DELETE FROM objects " +
-                    " WHERE OBJECT_ID = ?");
-            myStmt.setLong(1, id);
-
-            myStmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            myStmt = myConn.prepareStatement("DELETE FROM params " +
-                    "WHERE OBJECT_ID = ?");
-            myStmt.setLong(1, id);
-
-            myStmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        close();
-    }
+//    public void deleteSprint(Sprint sprint) {
+//        PreparedStatement myStmt;
+//        long id = sprint.getId();
+//
+//        openConnection();
+//
+//        try {
+//            myStmt = myConn.prepareStatement("DELETE FROM objects " +
+//                    " WHERE OBJECT_ID = ?");
+//            myStmt.setLong(1, id);
+//
+//            myStmt.execute();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            myStmt = myConn.prepareStatement("DELETE FROM params " +
+//                    "WHERE OBJECT_ID = ?");
+//            myStmt.setLong(1, id);
+//
+//            myStmt.execute();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        close();
+//    }
 
 }

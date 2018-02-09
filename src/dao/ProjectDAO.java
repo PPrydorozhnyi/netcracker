@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by drake on 08/02/18.
@@ -110,18 +109,18 @@ public class ProjectDAO extends DAO {
         Project project;
         PreparedStatement myStmt;
         ResultSet rs;
-        long id = new Random().nextLong();
+        long id = generateID();
 
         openConnection();
 
-        try {
-            rs = myConn.createStatement().executeQuery("SELECT ORA_HASH('objects', 9999) + CURRENT_TIME_MS idd FROM dual");
-            if (rs.next()) {
-                id = rs.getLong("idd");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            rs = myConn.createStatement().executeQuery("SELECT ORA_HASH('objects', 9999) + CURRENT_TIME_MS idd FROM dual");
+//            if (rs.next()) {
+//                id = rs.getLong("idd");
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
         project = new Project(id);
         project.copy(prj);
@@ -161,6 +160,8 @@ public class ProjectDAO extends DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        close();
 
         return project;
     }
@@ -214,34 +215,34 @@ public class ProjectDAO extends DAO {
 
     }
 
-    public void deleteProject(Project project) {
-        PreparedStatement myStmt;
-        long id = project.getId();
-
-        openConnection();
-
-        try {
-            myStmt = myConn.prepareStatement("DELETE FROM objects " +
-                    " WHERE OBJECT_ID = ?");
-            myStmt.setLong(1, id);
-
-            myStmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            myStmt = myConn.prepareStatement("DELETE FROM params " +
-                    "WHERE OBJECT_ID = ?");
-            myStmt.setLong(1, id);
-
-            myStmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        close();
-    }
+//    public void deleteProject(Project project) {
+//        PreparedStatement myStmt;
+//        long id = project.getId();
+//
+//        openConnection();
+//
+//        try {
+//            myStmt = myConn.prepareStatement("DELETE FROM objects " +
+//                    " WHERE OBJECT_ID = ?");
+//            myStmt.setLong(1, id);
+//
+//            myStmt.execute();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            myStmt = myConn.prepareStatement("DELETE FROM params " +
+//                    "WHERE OBJECT_ID = ?");
+//            myStmt.setLong(1, id);
+//
+//            myStmt.execute();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        close();
+//    }
 
 
 
